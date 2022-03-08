@@ -1,6 +1,8 @@
 package edu.byu.cs.tweeter.server.service;
 
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.server.dao.FollowDAO;
 
@@ -25,6 +27,16 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
         return getFollowingDAO().getFollowees(request);
+    }
+
+    /**
+     * Follows the user that the user specified in the request.
+     *
+     * @param request contains the data required to fulfill the request.
+     * @return the followee.
+     */
+    public FollowResponse follow(FollowRequest req) {
+        return new FollowResponse(true);
     }
 
     /**

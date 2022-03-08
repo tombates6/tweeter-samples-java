@@ -1,33 +1,27 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
+import edu.byu.cs.tweeter.server.service.FollowService;
 
 /**
- * Background task that establishes a following relationship between two users.
+ * An AWS lambda function that returns the users a user is following.
  */
-public class FollowHandler extends AuthenticatedTask {
+public class FollowHandler implements RequestHandler<FollowRequest, FollowResponse> {
+
     /**
-     * The user that is being followed.
+     * Follows a user that the user specified in the request.
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the followee.
      */
-    private final User followee;
-
-    public FollowHandler(AuthToken authToken, User followee, Handler messageHandler) {
-        super(authToken, messageHandler);
-        this.followee = followee;
-    }
-
     @Override
-    protected void runTask() {
-        // We could do this from the presenter, without a task and handler, but we will
-        // eventually access the database from here when we aren't using dummy data.
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
+    public FollowResponse handleRequest(FollowRequest request, Context context) {
+        FollowService service = new FollowService();
+        return service.follow(request);
     }
-
 }

@@ -1,43 +1,51 @@
-# Create Lambda functions
-[] follow
-[] feed
-[] followers_count
-[] followers
-[] following_count
-[] following
-[] story
-[] user
-[] is_follower
-[] login
-[] logout
-[] status
-[] register
-[] unfollow
-# Create API in APIGateway
+[X] Create API in APIGateway
 
-[] POST follow
-[] GET feed
-[] GET followers_count
-[] GET followers
-[] GET following_count
-[] GET following
-[] GET story
-[] GET user
-[] GET is_follower
-[] POST login
-[] POST logout
-[] POST status
-[] POST register
-[] POST unfollow
+[X] Create Empty Lambda functions for each Task
 
-# Modify Client Code
+[X] Connect APIGateway to Empty Lambdas
 
-# Back end Handler Layer
+[X] Test connection to Lambda functions through APIGateway
 
-# Back end Service Layer
+[] Write Request/Response classes
+    [X] Follow
+    [] GetFeed
+    [] GetFollowers
+    [] GetFollowersCount
+    [X] GetFollowing
+    [] GetFollowingCount
+    [] GetStory
+    [] GetUser
+    [] IsFollower
+    [X] Login
+    [] Logout
+    [] PostStatus
+    [] Register
+    [] Unfollow
 
-# Integration Tests
+[] Write Lambda Handler classes
+    [X] Follow
+    [] GetFeed
+    [] GetFollowers
+    [] GetFollowersCount
+    [X] GetFollowing
+    [] GetFollowingCount
+    [] GetStory
+    [] GetUser
+    [] IsFollower
+    [X] Login
+    [] Logout
+    [] PostStatus
+    [] Register
+    [] Unfollow
 
-# UML Sequence Diagram
+[] Write Lambda Service and FakeData classes
 
-# API Swagger Doc
+[] Acceptance Test all the AWS services by hitting the APIGateway endpoints
+
+[] Modify Client Code to use ServerFacade and ClientCommunicator
+
+[] Integration Tests
+
+[] UML Sequence Diagram
+
+[] Print API Swagger Doc
