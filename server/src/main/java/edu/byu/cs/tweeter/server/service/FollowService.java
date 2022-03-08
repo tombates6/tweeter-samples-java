@@ -32,7 +32,7 @@ public class FollowService {
     /**
      * Follows the user that the user specified in the request.
      *
-     * @param request contains the data required to fulfill the request.
+     * @param req contains the data required to fulfill the request.
      * @return the followee.
      */
     public FollowResponse follow(FollowRequest req) {

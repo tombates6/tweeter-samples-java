@@ -8,7 +8,7 @@
 
 [] Write Request/Response classes
     [X] Follow
-    [] GetFeed
+    [X] GetFeed
     [] GetFollowers
     [] GetFollowersCount
     [X] GetFollowing
