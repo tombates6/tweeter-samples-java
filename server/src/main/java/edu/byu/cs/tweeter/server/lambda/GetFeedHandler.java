@@ -1,26 +1,28 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
 
-import java.util.List;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.Pair;
+import edu.byu.cs.tweeter.model.net.request.FeedRequest;
+import edu.byu.cs.tweeter.model.net.response.FeedResponse;
+import edu.byu.cs.tweeter.server.service.FollowService;
 
 /**
- * Background task that retrieves a page of statuses from a user's feed.
+ * An AWS lambda function that returns a user's feed
  */
-public class GetFeedHandler extends PagedStatusTask {
+public class FeedHandler implements RequestHandler<FeedRequest, FeedResponse> {
 
-    public GetFeedHandler(AuthToken authToken, User targetUser, int limit, Status lastStatus,
-                          Handler messageHandler) {
-        super(authToken, targetUser, limit, lastStatus, messageHandler);
-    }
-
+    /**
+     * Gets a user's feed
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the followee.
+     */
     @Override
-    protected Pair<List<Status>, Boolean> getItems() {
-        return getFakeData().getPageOfStatus(getLastItem(), getLimit());
+    public FeedResponse handleRequest(FeedRequest request, Context context) {
+        FollowService service = new FollowService();
+        return service.getFeed(request);
     }
 }

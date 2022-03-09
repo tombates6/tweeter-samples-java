@@ -24,7 +24,7 @@
 
 [] Write Lambda Handler classes
     [X] Follow
-    [] GetFeed
+    [X] GetFeed
     [X] GetFollowers
     [] GetFollowersCount
     [X] GetFollowing
