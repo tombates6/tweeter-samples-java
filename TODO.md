@@ -45,14 +45,18 @@
         [X] getFollowingCount
         [X] isFollower
         [X] unfollow
-    [] StatusService
-        [] getFeed
-        [] getStory
-        [] post
+    [X] StatusService
+        [X] getFeed
+        [X] getStory
+        [X] post
     [] UserService
         [] getUserProfile
         [] logout
         [] register
+
+[] Add error handling and multiple response codes to API
+
+[] Generate .jar file for Lambdas and upload code to Lambdas
 
 [] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
