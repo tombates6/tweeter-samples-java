@@ -49,14 +49,14 @@
         [X] getFeed
         [X] getStory
         [X] post
-    [] UserService
-        [] getUserProfile
-        [] logout
-        [] register
-
-[] Add error handling and multiple response codes to API
+    [X] UserService
+        [X] getUserProfile
+        [X] logout
+        [X] register
 
 [] Generate .jar file for Lambdas and upload code to Lambdas
+
+[] Add error handling and multiple response codes to API
 
 [] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
