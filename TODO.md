@@ -39,11 +39,12 @@
     [X] Unfollow
 
 [] Write Lambda Service and FakeData classes
-    [] FollowService
-        [] getFollowersCount
-        [] getFollowingCount
-        [] isFollower
-        [] unfollow
+    [X] FollowService
+        [X] getFollowers
+        [X] getFollowersCount
+        [X] getFollowingCount
+        [X] isFollower
+        [X] unfollow
     [] StatusService
         [] getFeed
         [] getStory

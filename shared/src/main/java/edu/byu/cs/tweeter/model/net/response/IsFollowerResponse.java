@@ -5,11 +5,11 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 public class IsFollowerResponse extends Response {
     boolean isFollower;
 
-    IsFollowerResponse(String message) {
+    public IsFollowerResponse(String message) {
         super(false, message);
     }
 
-    IsFollowerResponse(boolean isFollower) {
+    public IsFollowerResponse(boolean isFollower) {
         super(true, null);
         this.isFollower = isFollower;
     }
