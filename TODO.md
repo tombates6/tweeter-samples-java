@@ -13,7 +13,7 @@
     [X] GetFollowersCount
     [X] GetFollowing
     [X] GetFollowingCount
-    [] GetStory
+    [X] GetStory
     [] GetUser
     [] IsFollower
     [X] Login

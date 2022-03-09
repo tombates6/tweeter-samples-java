@@ -4,10 +4,8 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 
 public class FeedRequest {
-
-
     private AuthToken authToken;
-    private String followerAlias;
+    private String userAlias;
     private int limit;
     private Status lastStatus;
 
@@ -19,15 +17,15 @@ public class FeedRequest {
     /**
      * Creates an instance.
      *
-     * @param followerAlias the alias of the user whose statuses are to be returned.
+     * @param userAlias the alias of the user whose statuses are to be returned.
      * @param limit the maximum number of statuses to return.
      * @param lastStatus the alias of the last status that was returned in the previous request (null if
      *                     there was no previous request or if no statuses were returned in the
      *                     previous request).
      */
-    public FeedRequest(AuthToken authToken, String followerAlias, int limit, Status lastStatus) {
+    public FeedRequest(AuthToken authToken, String userAlias, int limit, Status lastStatus) {
         this.authToken = authToken;
-        this.followerAlias = followerAlias;
+        this.userAlias = userAlias;
         this.limit = limit;
         this.lastStatus = lastStatus;
     }
@@ -55,17 +53,17 @@ public class FeedRequest {
      *
      * @return the follower.
      */
-    public String getFollowerAlias() {
-        return followerAlias;
+    public String getUserAlias() {
+        return userAlias;
     }
 
     /**
      * Sets the follower.
      *
-     * @param followerAlias the follower.
+     * @param userAlias the follower.
      */
-    public void setFollowerAlias(String followerAlias) {
-        this.followerAlias = followerAlias;
+    public void setUserAlias(String userAlias) {
+        this.userAlias = userAlias;
     }
 
     /**
