@@ -9,10 +9,10 @@
 [] Write Request/Response classes
     [X] Follow
     [X] GetFeed
-    [] GetFollowers
-    [] GetFollowersCount
+    [X] GetFollowers
+    [X] GetFollowersCount
     [X] GetFollowing
-    [] GetFollowingCount
+    [X] GetFollowingCount
     [] GetStory
     [] GetUser
     [] IsFollower
@@ -25,7 +25,7 @@
 [] Write Lambda Handler classes
     [X] Follow
     [] GetFeed
-    [] GetFollowers
+    [X] GetFollowers
     [] GetFollowersCount
     [X] GetFollowing
     [] GetFollowingCount
