@@ -15,9 +15,9 @@
     [X] GetFollowingCount
     [X] GetStory
     [X] GetUser
-    [] IsFollower
+    [X] IsFollower
     [X] Login
-    [] Logout
+    [X] Logout
     [] PostStatus
     [] Register
     [] Unfollow

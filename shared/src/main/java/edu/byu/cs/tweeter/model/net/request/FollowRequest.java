@@ -5,7 +5,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowRequest {
     private AuthToken authToken;
-
     private User selectedUser;
 
     /**
