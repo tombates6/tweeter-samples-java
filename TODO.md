@@ -6,7 +6,7 @@
 
 [X] Test connection to Lambda functions through APIGateway
 
-[] Write Request/Response classes
+[X] Write Request/Response classes
     [X] Follow
     [X] GetFeed
     [X] GetFollowers
@@ -18,9 +18,9 @@
     [X] IsFollower
     [X] Login
     [X] Logout
-    [] PostStatus
-    [] Register
-    [] Unfollow
+    [x] PostStatus
+    [X] Register
+    [X] Unfollow
 
 [] Write Lambda Handler classes
     [X] Follow
