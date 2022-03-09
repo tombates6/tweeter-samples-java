@@ -38,7 +38,7 @@
     [X] Register
     [X] Unfollow
 
-[] Write Lambda Service and FakeData classes
+[X] Write Lambda Service and FakeData classes
     [X] FollowService
         [X] getFollowers
         [X] getFollowersCount
@@ -55,15 +55,50 @@
         [X] register
 
 [] Generate .jar file for Lambdas and upload code to Lambdas
+    [] Generate .jar file from the server layer
+    [] Upload .jar file to each Lambda handler and select the correct class
+        [] Follow
+        [] GetFeed
+        [] GetFollowers
+        [] GetFollowersCount
+        [] GetFollowing
+        [] GetFollowingCount
+        [] GetStory
+        [] GetUser
+        [] IsFollower
+        [] Login
+        [] Logout
+        [] PostStatus
+        [] Register
+        [] Unfollow
 
-[] Add error handling and multiple response codes to API
+[] Add error handling, multiple response codes, and a description to each API method
+    [] Follow
+    [] GetFeed
+    [] GetFollowers
+    [] GetFollowersCount
+    [] GetFollowing
+    [] GetFollowingCount
+    [] GetStory
+    [] GetUser
+    [] IsFollower
+    [] Login
+    [] Logout
+    [] PostStatus
+    [] Register
+    [] Unfollow
 
 [] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
 [] Modify Client Code to use ServerFacade and ClientCommunicator
 
-[] Integration Tests
+[] Integration Tests (success only)
+    [] ServerFacade
+        [] Register
+        [] GetFollowers
+        [] GetFollowingCount and/or GetFollowersCount
+    [] StatusService GetStory
 
 [] UML Sequence Diagram
 
-[] Print API Swagger Doc
+[] API Swagger Doc
