@@ -36,7 +36,7 @@ public class FollowService {
      * @return the followee.
      */
     public FollowResponse follow(FollowRequest req) {
-        return new FollowResponse(true);
+        return new FollowResponse(true, null);
     }
 
     /**
