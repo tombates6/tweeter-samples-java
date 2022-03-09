@@ -1,43 +1,28 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.Pair;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
+import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
+import edu.byu.cs.tweeter.server.service.UserService;
 
 /**
- * Background task that creates a new user account and logs in the new user (i.e., starts a session).
+ * An AWS lambda function that registers a user.
  */
-public class RegisterHandler extends AuthenticateTask {
+public class RegisterHandler implements RequestHandler<RegisterRequest, RegisterResponse> {
 
     /**
-     * The user's first name.
+     * Registers a user
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the followee.
      */
-    private final String firstName;
-    
-    /**
-     * The user's last name.
-     */
-    private final String lastName;
-
-    /**
-     * The base-64 encoded bytes of the user's profile image.
-     */
-    private final String image;
-
-    public RegisterHandler(String firstName, String lastName, String username, String password,
-                           String image, Handler messageHandler) {
-        super(messageHandler, username, password);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.image = image;
-    }
-
     @Override
-    protected Pair<User, AuthToken> runAuthenticationTask() {
-        User registeredUser = getFakeData().getFirstUser();
-        AuthToken authToken = getFakeData().getAuthToken();
-        return new Pair<>(registeredUser, authToken);
+    public RegisterResponse handleRequest(RegisterRequest request, Context context) {
+        UserService service = new UserService();
+        return service.register(request);
     }
 }

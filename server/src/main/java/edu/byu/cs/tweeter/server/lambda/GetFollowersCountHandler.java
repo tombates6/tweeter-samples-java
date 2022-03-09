@@ -1,21 +1,28 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
+import edu.byu.cs.tweeter.server.service.FollowService;
 
 /**
- * Background task that queries how many followers a user has.
+ * An AWS lambda function that returns the count of a user's followers
  */
-public class GetFollowersCountHandler extends GetCountTask {
+public class GetFollowersCountHandler implements RequestHandler<FollowersCountRequest, FollowersCountResponse> {
 
-    public GetFollowersCountHandler(AuthToken authToken, User targetUser, Handler messageHandler) {
-        super(authToken, targetUser, messageHandler);
-    }
-
+    /**
+     * Gets a user's follower count
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the count.
+     */
     @Override
-    protected int runCountTask() {
-        return 20;
+    public FollowersCountResponse handleRequest(FollowersCountRequest request, Context context) {
+        FollowService service = new FollowService();
+        return service.getFollowersCount(request);
     }
 }

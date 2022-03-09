@@ -1,46 +1,28 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Bundle;
-import android.os.Handler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+import edu.byu.cs.tweeter.model.net.request.UserRequest;
+import edu.byu.cs.tweeter.model.net.response.UserResponse;
+import edu.byu.cs.tweeter.server.service.UserService;
 
 /**
- * Background task that returns the profile for a specified user.
+ * An AWS lambda function that returns the user's profile
  */
-public class GetUserHandler extends AuthenticatedTask {
-
-    public static final String USER_KEY = "user";
+public class GetUserHandler implements RequestHandler<UserRequest, UserResponse> {
 
     /**
-     * Alias (or handle) for user whose profile is being retrieved.
+     * Gets a user's profile
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the count.
      */
-    private final String alias;
-
-    private User user;
-
-    public GetUserHandler(AuthToken authToken, String alias, Handler messageHandler) {
-        super(authToken, messageHandler);
-        this.alias = alias;
-    }
-
     @Override
-    protected void runTask() {
-        user = getUser();
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
-    }
-
-    @Override
-    protected void loadSuccessBundle(Bundle msgBundle) {
-        msgBundle.putSerializable(USER_KEY, user);
-    }
-
-    private User getUser() {
-        return getFakeData().findUserByAlias(alias);
+    public UserResponse handleRequest(UserRequest request, Context context) {
+        UserService service = new UserService();
+        return service.getUserProfile(request);
     }
 }

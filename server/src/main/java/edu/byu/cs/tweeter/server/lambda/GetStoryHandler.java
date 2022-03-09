@@ -1,26 +1,26 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-import java.util.List;
-
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.util.Pair;
+import edu.byu.cs.tweeter.model.net.request.StoryRequest;
+import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 
 /**
- * Background task that retrieves a page of statuses from a user's story.
+ * An AWS lambda function that returns the story for a user
  */
-public class GetStoryHandler extends PagedStatusTask {
+public class GetStoryHandler implements RequestHandler<StoryRequest, StoryResponse> {
 
-    public GetStoryHandler(AuthToken authToken, User targetUser, int limit, Status lastStatus,
-                           Handler messageHandler) {
-        super(authToken, targetUser, limit, lastStatus, messageHandler);
-    }
-
+    /**
+     * Gets a user's follower count
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the count.
+     */
     @Override
-    protected Pair<List<Status>, Boolean> getItems() {
-        return getFakeData().getPageOfStatus(getLastItem(), getLimit());
+    public StoryResponse handleRequest(StoryRequest request, Context context) {
+        StatusService service = new StatusService();
+        return service.getStory(request);
     }
 }

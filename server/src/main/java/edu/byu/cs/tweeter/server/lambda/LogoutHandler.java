@@ -1,26 +1,20 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Handler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+import edu.byu.cs.tweeter.model.net.request.LogoutRequest;
+import edu.byu.cs.tweeter.model.net.response.LogoutResponse;
+import edu.byu.cs.tweeter.server.service.UserService;
 
 /**
- * Background task that logs out a user (i.e., ends a session).
+ * An AWS lambda function that logs a user out.
  */
-public class LogoutHandler extends AuthenticatedTask {
-
-    public LogoutHandler(AuthToken authToken, Handler messageHandler) {
-        super(authToken, messageHandler);
-    }
-
+public class LogoutHandler implements RequestHandler<LogoutRequest, LogoutResponse> {
     @Override
-    protected void runTask() {
-        // We could do this from the presenter, without a task and handler, but we will
-        // eventually remove the auth token from  the DB and will need this then.
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
+    public LogoutResponse handleRequest(LogoutRequest req, Context context) {
+        UserService userService = new UserService();
+        return userService.logout(req);
     }
 }

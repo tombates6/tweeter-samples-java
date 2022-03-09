@@ -1,50 +1,28 @@
 package edu.byu.cs.tweeter.server.lambda;
 
-import android.os.Bundle;
-import android.os.Handler;
 
-import java.util.Random;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
+import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
+import edu.byu.cs.tweeter.server.service.FollowService;
 
 /**
- * Background task that determines if one user is following another.
+ * An AWS lambda function that returns whether one user follows another
  */
-public class IsFollowerHandler extends AuthenticatedTask {
-
-    public static final String IS_FOLLOWER_KEY = "is-follower";
+public class IsFollowerHandler implements RequestHandler<IsFollowerRequest, IsFollowerResponse> {
 
     /**
-     * The alleged follower.
+     * Checks for the following status
+     *
+     * @param request contains the data required to fulfill the request.
+     * @param context the lambda context.
+     * @return the count.
      */
-    private final User follower;
-
-    /**
-     * The alleged followee.
-     */
-    private final User followee;
-
-    private boolean isFollower;
-
-    public IsFollowerHandler(AuthToken authToken, User follower, User followee, Handler messageHandler) {
-        super(authToken, messageHandler);
-        this.follower = follower;
-        this.followee = followee;
-    }
-
     @Override
-    protected void runTask() {
-        isFollower = new Random().nextInt() > 0;
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
-    }
-
-    @Override
-    protected void loadSuccessBundle(Bundle msgBundle) {
-        msgBundle.putBoolean(IS_FOLLOWER_KEY, isFollower);
+    public IsFollowerResponse handleRequest(IsFollowerRequest request, Context context) {
+        FollowService service = new FollowService();
+        return service.isFollower(request);
     }
 }

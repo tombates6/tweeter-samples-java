@@ -22,23 +22,36 @@
     [X] Register
     [X] Unfollow
 
-[] Write Lambda Handler classes
+[X] Write Lambda Handler classes
     [X] Follow
     [X] GetFeed
     [X] GetFollowers
-    [] GetFollowersCount
+    [X] GetFollowersCount
     [X] GetFollowing
-    [] GetFollowingCount
-    [] GetStory
-    [] GetUser
-    [] IsFollower
+    [X] GetFollowingCount
+    [X] GetStory
+    [X] GetUser
+    [X] IsFollower
     [X] Login
-    [] Logout
-    [] PostStatus
-    [] Register
-    [] Unfollow
+    [X] Logout
+    [X] PostStatus
+    [X] Register
+    [X] Unfollow
 
 [] Write Lambda Service and FakeData classes
+    [] FollowService
+        [] getFollowersCount
+        [] getFollowingCount
+        [] isFollower
+        [] unfollow
+    [] StatusService
+        [] getFeed
+        [] getStory
+        [] post
+    [] UserService
+        [] getUserProfile
+        [] logout
+        [] register
 
 [] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
