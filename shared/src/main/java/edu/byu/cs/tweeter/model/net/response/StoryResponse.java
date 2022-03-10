@@ -29,6 +29,14 @@ public class StoryResponse extends PagedResponse {
         this.story = story;
     }
 
+    public List<Status> getStory() {
+        return story;
+    }
+
+    public void setStory(List<Status> story) {
+        this.story = story;
+    }
+
     @Override
     public boolean equals(Object param) {
         if (this == param) {

@@ -54,41 +54,13 @@
         [X] logout
         [X] register
 
-[] Generate .jar file for Lambdas and upload code to Lambdas
-    [] Generate .jar file from the server layer
-    [] Upload .jar file to each Lambda handler and select the correct class
-        [] Follow
-        [] GetFeed
-        [] GetFollowers
-        [] GetFollowersCount
-        [] GetFollowing
-        [] GetFollowingCount
-        [] GetStory
-        [] GetUser
-        [] IsFollower
-        [] Login
-        [] Logout
-        [] PostStatus
-        [] Register
-        [] Unfollow
+[X] Generate .jar file for Lambdas and upload code to Lambdas
+    [X] Generate .jar file from the server layer
+    [X] Upload .jar file to each Lambda handler and select the correct class
 
-[] Add error handling, multiple response codes, and a description to each API method
-    [] Follow
-    [] GetFeed
-    [] GetFollowers
-    [] GetFollowersCount
-    [] GetFollowing
-    [] GetFollowingCount
-    [] GetStory
-    [] GetUser
-    [] IsFollower
-    [] Login
-    [] Logout
-    [] PostStatus
-    [] Register
-    [] Unfollow
+[X] Add error handling, multiple response codes, and a description to each API method
 
-[] Acceptance Test all the AWS services by hitting the APIGateway endpoints
+[X] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
 [] Modify Client Code to use ServerFacade and ClientCommunicator
 

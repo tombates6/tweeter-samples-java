@@ -1,12 +1,14 @@
 package edu.byu.cs.tweeter.model.net.request;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
+
 public class UserRequest {
     private String alias;
-    private String authToken;
+    private AuthToken authToken;
 
     private UserRequest(){}
 
-    public UserRequest(String alias, String authToken) {
+    public UserRequest(String alias, AuthToken authToken) {
         this.alias = alias;
         this.authToken = authToken;
     }
@@ -19,11 +21,11 @@ public class UserRequest {
         this.alias = alias;
     }
 
-    public String getAuthToken() {
+    public AuthToken getAuthToken() {
         return authToken;
     }
 
-    public void setAuthToken(String authToken) {
+    public void setAuthToken(AuthToken authToken) {
         this.authToken = authToken;
     }
 }

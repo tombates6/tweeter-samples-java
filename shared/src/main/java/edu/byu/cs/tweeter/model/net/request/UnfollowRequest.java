@@ -6,6 +6,8 @@ public class UnfollowRequest {
     private AuthToken authToken;
     private String followeeAlias;
 
+    private UnfollowRequest(){}
+
     public UnfollowRequest(AuthToken authToken, String followeeAlias) {
         this.authToken = authToken;
         this.followeeAlias = followeeAlias;
