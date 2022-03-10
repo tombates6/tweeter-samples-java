@@ -67,11 +67,14 @@ public abstract class PagedTask<T> extends AuthenticatedTask {
     protected final void runTask() throws IOException {
         try {
             Pair<List<T>, Boolean> pageOfItems = getItems();
-            items = pageOfItems.getFirst();
-            hasMorePages = pageOfItems.getSecond();
-            sendSuccessMessage();
+            if (pageOfItems == null) sendFailedMessage("unable to get new page of items");
+            else {
+                items = pageOfItems.getFirst();
+                hasMorePages = pageOfItems.getSecond();
+                sendSuccessMessage();
+            }
         } catch(RuntimeException e) {
-            sendFailedMessage(e.getMessage());
+            sendExceptionMessage(e);
         }
     }
 

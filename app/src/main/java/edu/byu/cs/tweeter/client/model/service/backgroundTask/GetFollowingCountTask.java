@@ -20,10 +20,10 @@ public class GetFollowingCountTask extends GetCountTask {
 
     @Override
     protected int runCountTask() {
-
         int count;
         try {
             FollowingCountResponse res = getServer().getFollowingCount(new FollowingCountRequest(getAuthToken(), getTargetUser().getAlias()));
+            if (!res.isSuccess()) return -1;
             count = res.getCount();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
