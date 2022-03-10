@@ -86,6 +86,7 @@ public class FeedFragment extends Fragment implements UserView, PageView<Status>
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
         userPresenter = new UserPresenter(this);
+        userPresenter.setUser((User) getArguments().getSerializable(USER_KEY));
         feedPresenter = new FeedPresenter(this);
         feedPresenter.loadMoreItems(userPresenter.getUser());
 

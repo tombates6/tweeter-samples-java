@@ -16,8 +16,6 @@ import edu.byu.cs.tweeter.util.FakeData;
 
 public class StatusDAO {
     public FeedResponse getFeed(FeedRequest req) {
-        assert req.getUserAlias() != null;
-        assert req.getLimit() > 0;
         // TODO: Generates dummy data. Replace with a real implementation.
         assert req.getLimit() > 0;
         assert req.getUserAlias() != null;

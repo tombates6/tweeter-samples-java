@@ -26,7 +26,8 @@ public class GetFollowingTask extends PagedUserTask {
     protected Pair<List<User>, Boolean> getItems() {
         Pair<List<User>, Boolean> items;
         try {
-            FollowingResponse res = getServer().getFollowing(new FollowingRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem().getAlias()));
+            String lastItem = getLastItem() != null ? getLastItem().getAlias() : null;
+            FollowingResponse res = getServer().getFollowing(new FollowingRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), lastItem));
             if (!res.isSuccess()) {
                 sendFailedMessage(res.getMessage());
                 return null;

@@ -86,6 +86,7 @@ public class StoryFragment extends Fragment implements UserView, PageView<Status
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
 
         userPresenter = new UserPresenter(this);
+        userPresenter.setUser((User) getArguments().getSerializable(USER_KEY));
         storyPresenter = new StoryPresenter(this);
         storyPresenter.loadMoreItems(userPresenter.getUser());
 

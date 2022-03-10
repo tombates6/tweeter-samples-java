@@ -98,8 +98,6 @@ public class ServerFacade {
      * @return the followees.
      */
     public FollowingResponse getFollowing(FollowingRequest request) throws IOException, TweeterRemoteException {
-        // TODO implement pagination
-
         FollowingResponse response = clientCommunicator.doPost("/follow/get-following", request, null, FollowingResponse.class);
 
         if(response.isSuccess()) {
@@ -110,8 +108,6 @@ public class ServerFacade {
     }
 
     public FollowersResponse getFollowers(FollowersRequest request) throws IOException, TweeterRemoteException {
-        // TODO implement pagination
-
         FollowersResponse response = clientCommunicator.doPost("/follow/get-followers", request, null, FollowersResponse.class);
 
         if(response.isSuccess()) {
@@ -122,7 +118,6 @@ public class ServerFacade {
     }
 
     public FollowingCountResponse getFollowingCount(FollowingCountRequest request) throws IOException, TweeterRemoteException {
-
         FollowingCountResponse response = clientCommunicator.doPost("/follow/get-following-count", request, null, FollowingCountResponse.class);
 
         if(response.isSuccess()) {
@@ -133,7 +128,6 @@ public class ServerFacade {
     }
 
     public FollowersCountResponse getFollowersCount(FollowersCountRequest request) throws IOException, TweeterRemoteException {
-
         FollowersCountResponse response = clientCommunicator.doPost("/follow/get-followers-count", request, null, FollowersCountResponse.class);
 
         if(response.isSuccess()) {
@@ -171,8 +165,6 @@ public class ServerFacade {
     }
 
     public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException {
-
-        // TODO implement pagination
         FeedResponse response = clientCommunicator.doPost("/status/get-feed", request, null, FeedResponse.class);
         if(response.isSuccess()) {
             return response;
@@ -182,7 +174,6 @@ public class ServerFacade {
     }
 
     public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException {
-        // TODO implement pagination
         StoryResponse response = clientCommunicator.doPost("/status/get-story", request, null, StoryResponse.class);
         if(response.isSuccess()) {
             return response;
