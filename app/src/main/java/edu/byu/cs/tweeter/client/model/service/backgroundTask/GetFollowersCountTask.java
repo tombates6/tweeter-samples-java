@@ -2,8 +2,16 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.util.List;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.FeedRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
+import edu.byu.cs.tweeter.model.net.response.FeedResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
+import edu.byu.cs.tweeter.util.Pair;
 
 /**
  * Background task that queries how many followers a user has.
@@ -16,6 +24,13 @@ public class GetFollowersCountTask extends GetCountTask {
 
     @Override
     protected int runCountTask() {
-        return 20;
+        int count;
+        try {
+            FollowersCountResponse res = getServer().getFollowersCount(new FollowersCountRequest(getAuthToken(), getTargetUser().getAlias()));
+            count = res.getCount();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return count;
     }
 }

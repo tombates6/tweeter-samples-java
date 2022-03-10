@@ -29,12 +29,12 @@ public abstract class GetCountTask extends AuthenticatedTask {
 
     @Override
     protected void runTask() {
-        count = runCountTask();
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
+        try {
+            count = runCountTask();
+            sendSuccessMessage();
+        } catch (RuntimeException e) {
+            sendFailedMessage(e.getMessage());
+        }
     }
 
     protected abstract int runCountTask();

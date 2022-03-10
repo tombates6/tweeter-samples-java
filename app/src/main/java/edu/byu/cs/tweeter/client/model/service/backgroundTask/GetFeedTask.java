@@ -26,14 +26,7 @@ public class GetFeedTask extends PagedStatusTask {
     protected Pair<List<Status>, Boolean> getItems() throws RuntimeException {
         Pair<List<Status>, Boolean> items;
         try {
-            FeedResponse res = getServer().getFeed(
-                    new FeedRequest(
-                            getAuthToken(),
-                            getTargetUser().getAlias(),
-                            getLimit(),
-                            getLastItem()
-                    ),
-                    "/status/get-feed");
+            FeedResponse res = getServer().getFeed(new FeedRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
             items = new Pair<>(res.getFeed(), res.getHasMorePages());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

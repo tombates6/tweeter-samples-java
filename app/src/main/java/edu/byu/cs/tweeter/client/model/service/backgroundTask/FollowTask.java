@@ -24,7 +24,7 @@ public class FollowTask extends AuthenticatedTask {
     @Override
     protected void runTask() {
         try {
-            getServer().follow(new FollowRequest(getAuthToken(), followee), "follow/follow-user");
+            getServer().follow(new FollowRequest(getAuthToken(), followee));
             sendSuccessMessage();
         } catch (Exception e) {
             sendExceptionMessage(e);
