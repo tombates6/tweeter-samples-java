@@ -97,7 +97,8 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowees(FollowingRequest request) throws IOException, TweeterRemoteException {
+    public FollowingResponse getFollowing(FollowingRequest request) throws IOException, TweeterRemoteException {
+        // TODO implement pagination
 
         FollowingResponse response = clientCommunicator.doPost("/follow/get-following", request, null, FollowingResponse.class);
 
@@ -109,6 +110,7 @@ public class ServerFacade {
     }
 
     public FollowersResponse getFollowers(FollowersRequest request) throws IOException, TweeterRemoteException {
+        // TODO implement pagination
 
         FollowersResponse response = clientCommunicator.doPost("/follow/get-followers", request, null, FollowersResponse.class);
 
@@ -169,6 +171,8 @@ public class ServerFacade {
     }
 
     public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException {
+
+        // TODO implement pagination
         FeedResponse response = clientCommunicator.doPost("/status/get-feed", request, null, FeedResponse.class);
         if(response.isSuccess()) {
             return response;
@@ -178,6 +182,7 @@ public class ServerFacade {
     }
 
     public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException {
+        // TODO implement pagination
         StoryResponse response = clientCommunicator.doPost("/status/get-story", request, null, StoryResponse.class);
         if(response.isSuccess()) {
             return response;

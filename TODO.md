@@ -62,9 +62,13 @@
 
 [X] Acceptance Test all the AWS services by hitting the APIGateway endpoints
 
-[] Modify Client Code to use ServerFacade and ClientCommunicator
+[X] Modify Client Code to use ServerFacade and ClientCommunicator
     [X] ServerFacade URL and methods
-    [] Integrate ServerFacade with background tasks
+    [x] Integrate ServerFacade with background tasks
+
+[] Ensure pagination is implemented in the Lambda handlers
+
+[] Acceptance Test the apps
 
 [] Integration Tests (success only)
     [] ServerFacade

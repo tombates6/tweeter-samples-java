@@ -25,9 +25,8 @@ public class FollowTask extends AuthenticatedTask {
     protected void runTask() {
         try {
             FollowResponse res = getServer().follow(new FollowRequest(getAuthToken(), followee));
-            if (res.isSuccess()) {
-                sendSuccessMessage();
-            } else sendFailedMessage("Unable to follow user: " + followee.getAlias());
+            if (res.isSuccess()) sendSuccessMessage();
+            else sendFailedMessage(res.getMessage());
         } catch (Exception e) {
             sendExceptionMessage(e);
         }

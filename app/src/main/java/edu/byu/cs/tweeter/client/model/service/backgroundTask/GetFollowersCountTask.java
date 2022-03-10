@@ -27,7 +27,10 @@ public class GetFollowersCountTask extends GetCountTask {
         int count;
         try {
             FollowersCountResponse res = getServer().getFollowersCount(new FollowersCountRequest(getAuthToken(), getTargetUser().getAlias()));
-            if (!res.isSuccess()) return -1;
+            if (!res.isSuccess()) {
+                sendFailedMessage(res.getMessage());
+                return -1;
+            }
             count = res.getCount();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());

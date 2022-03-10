@@ -31,13 +31,12 @@ public abstract class GetCountTask extends AuthenticatedTask {
     protected void runTask() {
         try {
             int res = runCountTask();
-            if (res == -1) sendFailedMessage("Unable to get count");
-            else {
+            if (res != -1) {
                 count = res;
                 sendSuccessMessage();
             }
         } catch (RuntimeException e) {
-            sendFailedMessage(e.getMessage());
+            sendExceptionMessage(e);
         }
     }
 

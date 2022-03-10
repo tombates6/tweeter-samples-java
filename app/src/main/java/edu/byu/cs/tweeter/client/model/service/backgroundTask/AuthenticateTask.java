@@ -35,20 +35,23 @@ public abstract class AuthenticateTask extends BackgroundTask {
     }
 
 
+
+
     @Override
     protected final void runTask()  throws IOException {
-        Pair<User, AuthToken> loginResult = runAuthenticationTask();
-
-        authenticatedUser = loginResult.getFirst();
-        authToken = loginResult.getSecond();
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
+        try {
+            Pair<User, AuthToken> loginResult = runAuthenticationTask();
+            if (loginResult != null) {
+                authenticatedUser = loginResult.getFirst();
+                authToken = loginResult.getSecond();
+                sendSuccessMessage();
+            }
+        } catch (RuntimeException e) {
+            sendExceptionMessage(e);
+        }
     }
 
-    protected abstract Pair<User, AuthToken> runAuthenticationTask();
+    protected abstract Pair<User, AuthToken> runAuthenticationTask() throws IOException;
 
     @Override
     protected void loadSuccessBundle(Bundle msgBundle) {

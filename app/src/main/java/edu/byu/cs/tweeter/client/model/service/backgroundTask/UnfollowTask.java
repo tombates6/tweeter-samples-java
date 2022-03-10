@@ -2,8 +2,14 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
+import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
+import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 
 /**
  * Background task that removes a following relationship between two users.
@@ -21,14 +27,14 @@ public class UnfollowTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void runTask() {
-        // We could do this from the presenter, without a task and handler, but we will
-        // eventually access the database from here when we aren't using dummy data.
-
-        // Call sendSuccessMessage if successful
-        sendSuccessMessage();
-        // or call sendFailedMessage if not successful
-        // sendFailedMessage()
+    protected void runTask() throws IOException {
+        try {
+            UnfollowResponse res = getServer().unfollow(new UnfollowRequest(getAuthToken(), followee.getAlias()));
+            if (res.isSuccess()) sendSuccessMessage();
+            else sendFailedMessage(res.getMessage());
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
     }
 
 

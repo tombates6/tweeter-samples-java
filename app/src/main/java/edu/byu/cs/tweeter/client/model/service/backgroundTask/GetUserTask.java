@@ -34,10 +34,11 @@ public class GetUserTask extends AuthenticatedTask {
     protected void runTask() throws IOException {
         try {
             UserResponse res = getServer().getUserProfile(new UserRequest(alias, getAuthToken()));
-            user = res.getUser();
             if (res.isSuccess()) {
+                user = res.getUser();
                 sendSuccessMessage();
-            } else sendFailedMessage("Could not get user profile.");
+            }
+            else sendFailedMessage(res.getMessage());
         } catch (Exception e) {
             throw new IOException(e.getMessage());
         }

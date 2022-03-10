@@ -7,6 +7,10 @@ import java.util.List;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
+import edu.byu.cs.tweeter.model.net.request.StoryRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
+import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.util.Pair;
 
 /**
@@ -21,6 +25,17 @@ public class GetStoryTask extends PagedStatusTask {
 
     @Override
     protected Pair<List<Status>, Boolean> getItems() {
-        return getFakeData().getPageOfStatus(getLastItem(), getLimit());
+        Pair<List<Status>, Boolean> items;
+        try {
+            StoryResponse res = getServer().getStory(new StoryRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
+            if (!res.isSuccess()) {
+                sendFailedMessage(res.getMessage());
+                return null;
+            }
+            items = new Pair<>(res.getStory(), res.getHasMorePages());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return items;
     }
 }
