@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.util.FakeData;
 
 public abstract class BackgroundTask implements Runnable {
@@ -21,8 +22,11 @@ public abstract class BackgroundTask implements Runnable {
      */
     private final Handler messageHandler;
 
+    private final ServerFacade server;
+
     protected BackgroundTask(Handler messageHandler) {
         this.messageHandler = messageHandler;
+        this.server = new ServerFacade();
     }
 
     @Override
@@ -39,6 +43,10 @@ public abstract class BackgroundTask implements Runnable {
 
     protected FakeData getFakeData() {
         return new FakeData();
+    }
+
+    protected ServerFacade getServer() {
+        return server;
     }
 
     /**
