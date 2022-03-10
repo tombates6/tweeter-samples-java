@@ -2,11 +2,13 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
@@ -23,18 +25,8 @@ public class GetFollowersCountTask extends GetCountTask {
     }
 
     @Override
-    protected int runCountTask() {
-        int count;
-        try {
-            FollowersCountResponse res = getServer().getFollowersCount(new FollowersCountRequest(getAuthToken(), getTargetUser().getAlias()));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return -1;
-            }
-            count = res.getCount();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return count;
+    protected int runCountTask() throws IOException, TweeterRemoteException {
+        FollowersCountResponse res = getServer().getFollowersCount(new FollowersCountRequest(getAuthToken(), getTargetUser().getAlias()));
+        return res.getCount();
     }
 }

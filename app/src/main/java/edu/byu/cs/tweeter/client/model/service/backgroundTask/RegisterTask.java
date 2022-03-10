@@ -42,18 +42,8 @@ public class RegisterTask extends AuthenticateTask {
     }
 
     @Override
-    protected Pair<User, AuthToken> runAuthenticationTask() throws IOException {
-        Pair<User, AuthToken> registerResult;
-        try {
-            RegisterResponse res = getServer().register(new RegisterRequest(firstName, lastName, username, password, image));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return null;
-            }
-            registerResult = res.getLoginResult();
-        } catch (TweeterRemoteException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return registerResult;
+    protected Pair<User, AuthToken> runAuthenticationTask() throws IOException, TweeterRemoteException {
+        RegisterResponse res = getServer().register(new RegisterRequest(firstName, lastName, username, password, image));
+        return res.getLoginResult();
     }
 }

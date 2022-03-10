@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.UserRequest;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
@@ -31,10 +32,9 @@ public class PostStatusTask extends AuthenticatedTask {
     protected void runTask() throws IOException {
         try {
             PostStatusResponse res = getServer().postStatus(new PostStatusRequest(getAuthToken(), status));
-            if (res.isSuccess()) sendSuccessMessage();
-            else sendFailedMessage(res.getMessage());
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            sendSuccessMessage();
+        } catch (TweeterRemoteException e) {
+            sendFailedMessage(e.getMessage());
         }
     }
 

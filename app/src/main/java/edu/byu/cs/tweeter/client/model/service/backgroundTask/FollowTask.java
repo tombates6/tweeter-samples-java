@@ -2,8 +2,11 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 
@@ -22,13 +25,12 @@ public class FollowTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void runTask() {
+    protected void runTask() throws IOException {
         try {
-            FollowResponse res = getServer().follow(new FollowRequest(getAuthToken(), followee));
-            if (res.isSuccess()) sendSuccessMessage();
-            else sendFailedMessage(res.getMessage());
-        } catch (Exception e) {
-            sendExceptionMessage(e);
+            getServer().follow(new FollowRequest(getAuthToken(), followee));
+            sendSuccessMessage();
+        } catch (TweeterRemoteException e) {
+            sendFailedMessage(e.getMessage());
         }
     }
 

@@ -2,11 +2,13 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
@@ -24,19 +26,9 @@ public class GetFollowersTask extends PagedUserTask {
     }
 
     @Override
-    protected Pair<List<User>, Boolean> getItems() {
-        Pair<List<User>, Boolean> items;
-        try {
-            String lastItem = getLastItem() != null ? getLastItem().getAlias() : null;
-            FollowersResponse res = getServer().getFollowers(new FollowersRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), lastItem));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return null;
-            }
-            items = new Pair<>(res.getFollowers(), res.getHasMorePages());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return items;
+    protected Pair<List<User>, Boolean> getItems() throws IOException, TweeterRemoteException {
+        String lastItem = getLastItem() != null ? getLastItem().getAlias() : null;
+        FollowersResponse res = getServer().getFollowers(new FollowersRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), lastItem));
+        return new Pair<>(res.getFollowers(), res.getHasMorePages());
     }
 }

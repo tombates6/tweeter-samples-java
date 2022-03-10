@@ -2,11 +2,13 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.net.request.StoryRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
@@ -24,18 +26,8 @@ public class GetStoryTask extends PagedStatusTask {
     }
 
     @Override
-    protected Pair<List<Status>, Boolean> getItems() {
-        Pair<List<Status>, Boolean> items;
-        try {
-            StoryResponse res = getServer().getStory(new StoryRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return null;
-            }
-            items = new Pair<>(res.getStory(), res.getHasMorePages());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return items;
+    protected Pair<List<Status>, Boolean> getItems() throws IOException, TweeterRemoteException {
+        StoryResponse res = getServer().getStory(new StoryRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
+        return new Pair<>(res.getStory(), res.getHasMorePages());
     }
 }

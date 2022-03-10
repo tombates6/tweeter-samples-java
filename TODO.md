@@ -66,9 +66,9 @@
     [X] ServerFacade URL and methods
     [x] Integrate ServerFacade with background tasks
 
-[] Ensure pagination is implemented in the Lambda handlers
+[X] Ensure pagination is implemented in the Lambda handlers
 
-[] Acceptance Test the apps
+[X] Acceptance Test the apps
 
 [] Integration Tests (success only)
     [] ServerFacade

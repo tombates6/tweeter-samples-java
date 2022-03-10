@@ -34,13 +34,10 @@ public class GetUserTask extends AuthenticatedTask {
     protected void runTask() throws IOException {
         try {
             UserResponse res = getServer().getUserProfile(new UserRequest(alias, getAuthToken()));
-            if (res.isSuccess()) {
-                user = res.getUser();
-                sendSuccessMessage();
-            }
-            else sendFailedMessage(res.getMessage());
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
+            user = res.getUser();
+            sendSuccessMessage();
+        } catch (TweeterRemoteException e) {
+            sendFailedMessage(e.getMessage());
         }
     }
 

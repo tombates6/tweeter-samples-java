@@ -22,18 +22,8 @@ public class LoginTask extends AuthenticateTask {
     }
 
     @Override
-    protected Pair<User, AuthToken> runAuthenticationTask() throws IOException {
-        Pair<User, AuthToken> loginResult;
-        try {
-            LoginResponse res = getServer().login(new LoginRequest(username, password));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return null;
-            }
-            loginResult = new Pair<>(res.getUser(), res.getAuthToken());
-        } catch (TweeterRemoteException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return loginResult;
+    protected Pair<User, AuthToken> runAuthenticationTask() throws IOException, TweeterRemoteException {
+        LoginResponse res = getServer().login(new LoginRequest(username, password));
+        return new Pair<>(res.getUser(), res.getAuthToken());
     }
 }

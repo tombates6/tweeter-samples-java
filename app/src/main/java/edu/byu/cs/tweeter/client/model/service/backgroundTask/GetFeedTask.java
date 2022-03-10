@@ -8,6 +8,7 @@ import java.util.List;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
 import edu.byu.cs.tweeter.util.Pair;
@@ -23,18 +24,8 @@ public class GetFeedTask extends PagedStatusTask {
     }
 
     @Override
-    protected Pair<List<Status>, Boolean> getItems() throws RuntimeException {
-        Pair<List<Status>, Boolean> items;
-        try {
-            FeedResponse res = getServer().getFeed(new FeedRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
-            if (!res.isSuccess()) {
-                sendFailedMessage(res.getMessage());
-                return null;
-            }
-            items = new Pair<>(res.getFeed(), res.getHasMorePages());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return items;
+    protected Pair<List<Status>, Boolean> getItems() throws RuntimeException, IOException, TweeterRemoteException {
+        FeedResponse res = getServer().getFeed(new FeedRequest(getAuthToken(), getTargetUser().getAlias(), getLimit(), getLastItem()));
+        return new Pair<>(res.getFeed(), res.getHasMorePages());
     }
 }

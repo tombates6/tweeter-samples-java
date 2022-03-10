@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.util.Pair;
 
 public abstract class PagedTask<T> extends AuthenticatedTask {
@@ -67,17 +68,15 @@ public abstract class PagedTask<T> extends AuthenticatedTask {
     protected final void runTask() throws IOException {
         try {
             Pair<List<T>, Boolean> pageOfItems = getItems();
-            if (pageOfItems != null) {
-                items = pageOfItems.getFirst();
-                hasMorePages = pageOfItems.getSecond();
-                sendSuccessMessage();
-            }
-        } catch(RuntimeException e) {
-            sendExceptionMessage(e);
+            items = pageOfItems.getFirst();
+            hasMorePages = pageOfItems.getSecond();
+            sendSuccessMessage();
+        } catch (TweeterRemoteException e) {
+            sendFailedMessage(e.getMessage());
         }
     }
 
-    protected abstract Pair<List<T>, Boolean> getItems();
+    protected abstract Pair<List<T>, Boolean> getItems() throws IOException, TweeterRemoteException;
 
     protected abstract List<User> getUsersForItems(List<T> items);
 
