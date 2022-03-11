@@ -49,43 +49,23 @@ public class ServerFacade {
      * @return the login response.
      */
     public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException {
-        LoginResponse response = clientCommunicator.doPost("/auth/login", request, null, LoginResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/auth/login", request, null, LoginResponse.class);
     }
 
     public LogoutResponse logout(LogoutRequest request) throws IOException, TweeterRemoteException {
-        LogoutResponse response = clientCommunicator.doPost("/auth/logout", request, null, LogoutResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/auth/logout", request, null, LogoutResponse.class);
     }
 
     public RegisterResponse register(RegisterRequest request) throws IOException, TweeterRemoteException {
-        RegisterResponse response = clientCommunicator.doPost("/auth/register", request, null, RegisterResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/auth/register", request, null, RegisterResponse.class);
     }
 
     public UserResponse getUserProfile(UserRequest request) throws IOException, TweeterRemoteException {
-        UserResponse response = clientCommunicator.doPost("/user/get-profile", request, null, UserResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/user/get-profile", request, null, UserResponse.class);
     }
 
     /**
@@ -98,96 +78,46 @@ public class ServerFacade {
      * @return the followees.
      */
     public FollowingResponse getFollowing(FollowingRequest request) throws IOException, TweeterRemoteException {
-        FollowingResponse response = clientCommunicator.doPost("/follow/get-following", request, null, FollowingResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/get-following", request, null, FollowingResponse.class);
     }
 
     public FollowersResponse getFollowers(FollowersRequest request) throws IOException, TweeterRemoteException {
-        FollowersResponse response = clientCommunicator.doPost("/follow/get-followers", request, null, FollowersResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/get-followers", request, null, FollowersResponse.class);
     }
 
     public FollowingCountResponse getFollowingCount(FollowingCountRequest request) throws IOException, TweeterRemoteException {
-        FollowingCountResponse response = clientCommunicator.doPost("/follow/get-following-count", request, null, FollowingCountResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/get-following-count", request, null, FollowingCountResponse.class);
     }
 
     public FollowersCountResponse getFollowersCount(FollowersCountRequest request) throws IOException, TweeterRemoteException {
-        FollowersCountResponse response = clientCommunicator.doPost("/follow/get-followers-count", request, null, FollowersCountResponse.class);
 
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/get-followers-count", request, null, FollowersCountResponse.class);
     }
 
     public FollowResponse follow(FollowRequest request) throws IOException, TweeterRemoteException {
-        FollowResponse response = clientCommunicator.doPost("/follow/follow-user", request, null, FollowResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/follow-user", request, null, FollowResponse.class);
     }
 
     public UnfollowResponse unfollow(UnfollowRequest request) throws IOException, TweeterRemoteException {
-        UnfollowResponse response = clientCommunicator.doPost("/follow/unfollow-user", request, null, UnfollowResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/unfollow-user", request, null, UnfollowResponse.class);
     }
 
     public IsFollowerResponse isFollower(IsFollowerRequest request) throws IOException, TweeterRemoteException {
-        IsFollowerResponse response = clientCommunicator.doPost("/follow/is-follower", request, null, IsFollowerResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/follow/is-follower", request, null, IsFollowerResponse.class);
     }
 
     public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException {
-        FeedResponse response = clientCommunicator.doPost("/status/get-feed", request, null, FeedResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/status/get-feed", request, null, FeedResponse.class);
     }
 
     public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException {
-        StoryResponse response = clientCommunicator.doPost("/status/get-story", request, null, StoryResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/status/get-story", request, null, StoryResponse.class);
     }
 
     public PostStatusResponse postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException {
-        PostStatusResponse response = clientCommunicator.doPost("/status/post-status", request, null, PostStatusResponse.class);
-        if(response.isSuccess()) {
-            return response;
-        } else {
-            throw new RuntimeException(response.getMessage());
-        }
+        return clientCommunicator.doPost("/status/post-status", request, null, PostStatusResponse.class);
     }
 }
