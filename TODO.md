@@ -79,4 +79,4 @@
 
 [] UML Sequence Diagram
 
-[] API Swagger Doc
+[] API Swagger Doc with accurate descriptions
