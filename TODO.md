@@ -70,12 +70,12 @@
 
 [X] Acceptance Test the apps
 
-[] Integration Tests (success only)
-    [] ServerFacade
-        [] Register
-        [] GetFollowers
-        [] GetFollowingCount and/or GetFollowersCount
-    [] StatusService GetStory
+[X] Integration Tests (success only)
+    [X] ServerFacade
+        [X] Register
+        [X] GetFollowers
+        [X] GetFollowingCount and/or GetFollowersCount
+    [X] StatusService GetStory
 
 [] UML Sequence Diagram
 
