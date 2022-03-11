@@ -16,6 +16,11 @@ import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+
 public class ServerFacadeIntegrationTest {
     private final AuthToken authToken = new AuthToken();
     private final String alias = "@allen";
@@ -40,60 +45,72 @@ public class ServerFacadeIntegrationTest {
         null,
         null
     );
-    private final FollowersRequest followersReq = new FollowersRequest(
+    private final FollowersRequest goodFollowersReq = new FollowersRequest(
             authToken,
             alias,
             limit,
             null
     );
-    private final FollowingCountRequest followingCountReq = new FollowingCountRequest(authToken, alias);
-    private final FollowersCountRequest followersCountReq = new FollowersCountRequest(authToken, alias);
-    private final ServerFacade server = new ServerFacade();
+    private final FollowersRequest badFollowersReq = new FollowersRequest(
+            null,
+            null,
+            -1,
+            null
+    );
+    private final FollowingCountRequest goodFollowingCountReq = new FollowingCountRequest(authToken, alias);
+    private final FollowingCountRequest badFollowingCountReq = new FollowingCountRequest(null, null);
+    private final FollowersCountRequest goodFollowersCountReq = new FollowersCountRequest(authToken, alias);
+    private final FollowersCountRequest badFollowersCountReq = new FollowersCountRequest(null, null);
+    private final ServerFacade server = spy(new ServerFacade());
 
 
     @Test
     public void registerSuccess() throws IOException, TweeterRemoteException {
         RegisterResponse res = server.register(goodRegisterReq);
-        assert(res.isSuccess());
-        assert(res.getLoginResult().getFirst().equals(testUser));
-        assert(res.getLoginResult().getSecond().token == null);
-        assert(res.getLoginResult().getSecond().datetime == null);
+        assertTrue(res.isSuccess());
+        assertEquals(res.getLoginResult().getFirst(), testUser);
+        assertNull(res.getLoginResult().getSecond().token);
+        assertNull(res.getLoginResult().getSecond().datetime);
     }
 
-    @Test
+    @Test(expected = TweeterRemoteException.class)
     public void registerFailure() throws IOException, TweeterRemoteException {
-        RegisterResponse res = server.register(badRegisterReq);
-        assert(!res.isSuccess());
-        assert(res.getLoginResult().getFirst().equals(testUser));
-    }
-
-    @Test
-    public void registerException() throws IOException, TweeterRemoteException {
-        RegisterResponse res = server.register(goodRegisterReq);
-        assert(res.isSuccess());
-        assert(res.getLoginResult().getFirst().equals(testUser));
-        assert(res.getLoginResult().getSecond().token == null);
-        assert(res.getLoginResult().getSecond().datetime == null);
+        verify(server.register(badRegisterReq));
     }
 
     @Test
     public void getFollowersSuccess() throws IOException, TweeterRemoteException {
-        FollowersResponse res = server.getFollowers(followersReq);
-        assert(res.isSuccess());
-        assert(res.getFollowers().size() == limit);
+        FollowersResponse res = server.getFollowers(goodFollowersReq);
+        assertTrue(res.isSuccess());
+        assertEquals(res.getFollowers().size(), limit);
+    }
+
+    @Test(expected = TweeterRemoteException.class)
+    public void getFollowersFailure() throws IOException, TweeterRemoteException {
+        verify(server.getFollowers(badFollowersReq));
     }
 
     @Test
-    public void getFollowingCount() throws IOException, TweeterRemoteException {
-        FollowingCountResponse res = server.getFollowingCount(followingCountReq);
-        assert(res.isSuccess());
-        assert(res.getCount() == 21);
+    public void getFollowingCountSuccess() throws IOException, TweeterRemoteException {
+        FollowingCountResponse res = server.getFollowingCount(goodFollowingCountReq);
+        assertTrue(res.isSuccess());
+        assertEquals(21, res.getCount());
+    }
+
+    @Test(expected = TweeterRemoteException.class)
+    public void getFollowingCountFailure() throws IOException, TweeterRemoteException {
+        verify(server.getFollowingCount(badFollowingCountReq));
     }
 
     @Test
-    public void getFollowersCount() throws IOException, TweeterRemoteException {
-        FollowersCountResponse res = server.getFollowersCount((followersCountReq));
-        assert(res.isSuccess());
-        assert(res.getCount() == 21);
+    public void getFollowersCountSuccess() throws IOException, TweeterRemoteException {
+        FollowersCountResponse res = server.getFollowersCount((goodFollowersCountReq));
+        assertTrue(res.isSuccess());
+        assertEquals(21, res.getCount());
+    }
+
+    @Test(expected = TweeterRemoteException.class)
+    public void getFollowersCountFailure() throws IOException, TweeterRemoteException {
+        verify(server.getFollowersCount((badFollowersCountReq)));
     }
 }

@@ -36,13 +36,13 @@ public class StatusService {
     /**
      * Message handler (i.e., observer) for GetStoryTask.
      */
-    private class GetStatusHandler extends BackgroundTaskHandler<IPagedTaskObserver<Status>> {
+    public class GetStatusHandler extends BackgroundTaskHandler<IPagedTaskObserver<Status>> {
         public GetStatusHandler(IPagedTaskObserver<Status> observer) {
             super(observer);
         }
 
         @Override
-        protected void handleSuccessMessage(IPagedTaskObserver<Status> observer, Bundle data) {
+        public void handleSuccessMessage(IPagedTaskObserver<Status> observer, Bundle data) {
             List<Status> statuses = (List<Status>) data.getSerializable(PagedStatusTask.ITEMS_KEY);
             boolean hasMorePages = data.getBoolean(PagedStatusTask.MORE_PAGES_KEY);
             observer.handleSuccess(statuses, hasMorePages);
@@ -50,7 +50,7 @@ public class StatusService {
     }
 
     // PostStatusHandler
-    private class PostStatusHandler extends BackgroundTaskHandler<IEmptySuccessObserver> {
+    public class PostStatusHandler extends BackgroundTaskHandler<IEmptySuccessObserver> {
         public PostStatusHandler(IEmptySuccessObserver observer) {
             super(observer);
         }
