@@ -1,7 +1,12 @@
-[] Create abstract factories or dependency injection to create DAOs
+# Milestone 4A
 [] Create DAO interfaces for each DynamoDB table. Have read/write methods. Do this so it's DB agnostic.
-    [] UserDAO
+    [] IUserDAO
+    [] IFollowDAO
+    [] IAuthDAO
+    [] IStoryDAO
+    [] IFeedDAO
 [] Create a package of classes that implement DAO interfaces using DynamoDB
+[] Implement dependency injection to create DAOs
 [] Create DynamoDB tables and indices
     [] follows - follower/followee alias, first/last names, image URL
     [] users - alias, hashed password, first name, last name, image URL, counts
