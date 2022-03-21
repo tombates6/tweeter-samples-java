@@ -1,10 +1,10 @@
 # Milestone 4A
-[] Create DAO interfaces for each DynamoDB table. Have read/write methods. Do this so it's DB agnostic.
-    [] IUserDAO
-    [] IFollowDAO
-    [] IAuthDAO
-    [] IStoryDAO
-    [] IFeedDAO
+[X] Create DAO interfaces for each DynamoDB table. Have read/write methods. Do this so it's DB agnostic.
+    [X] IUserDAO
+    [X] IFollowDAO
+    [X] IAuthDAO
+    [X] IStoryDAO
+    [X] IFeedDAO
 [] Create a package of classes that implement DAO interfaces using DynamoDB
 [] Implement dependency injection to create DAOs
 [] Create DynamoDB tables and indices
