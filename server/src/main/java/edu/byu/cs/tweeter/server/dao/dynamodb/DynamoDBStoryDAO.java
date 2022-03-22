@@ -1,7 +1,13 @@
 package edu.byu.cs.tweeter.server.dao.dynamodb;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.crypto.Data;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
@@ -9,10 +15,21 @@ import edu.byu.cs.tweeter.model.net.request.StoryRequest;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.server.dao.IStoryDAO;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public class DynamoDBStoryDAO implements IStoryDAO {
+    private static final String TableName = "stories";
+    private static final String IndexName = "alias";
+
+    // DynamoDB client
+    private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withRegion("us-west-2")
+            .build();
+    private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+
     @Override
-    public StoryResponse getStory(StoryRequest req) {
+    public StoryResponse getStory(StoryRequest req) throws DataAccessException {
         assert req.getUserAlias() != null;
         assert req.getLimit() > 0;
         // TODO: Generates dummy data. Replace with a real implementation.
@@ -40,7 +57,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
     }
 
     @Override
-    public PostStatusResponse postStatus(PostStatusRequest req) {
+    public PostStatusResponse postStatus(PostStatusRequest req) throws DataAccessException {
         return new PostStatusResponse(true, null);
     }
 }

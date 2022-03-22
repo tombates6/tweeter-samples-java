@@ -14,13 +14,14 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public interface IFollowDAO {
-    IsFollowerResponse isFollower(IsFollowerRequest request);
-    FollowersResponse getFollowers(FollowersRequest request);
-    FollowersCountResponse getFollowersCount(FollowersCountRequest request);
-    FollowingResponse getFollowing(FollowingRequest request);
-    FollowingCountResponse getFollowingCount(FollowingCountRequest request);
-    FollowResponse follow(FollowRequest req);
-    UnfollowResponse unfollow(UnfollowRequest req);
+    IsFollowerResponse isFollower(IsFollowerRequest request) throws DataAccessException;
+    FollowersResponse getFollowers(FollowersRequest request) throws DataAccessException;
+    FollowersCountResponse getFollowersCount(FollowersCountRequest request) throws DataAccessException;
+    FollowingResponse getFollowing(FollowingRequest request) throws DataAccessException;
+    FollowingCountResponse getFollowingCount(FollowingCountRequest request) throws DataAccessException;
+    FollowResponse follow(FollowRequest req) throws DataAccessException;
+    UnfollowResponse unfollow(UnfollowRequest req) throws DataAccessException;
 }

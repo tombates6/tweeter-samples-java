@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.server.dao.dynamodb;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,12 +23,23 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 import edu.byu.cs.tweeter.util.FakeData;
 
 /**
  * A DAO for accessing 'following' data from the database.
  */
 public class DynamoDBFollowDAO {
+    private static final String TableName = "follows";
+    private static final String IndexName = "follower_handle";
+    private static final String GSIName = "followee_handle";
+
+    // DynamoDB client
+    private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withRegion("us-west-2")
+            .build();
+    private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 
     /**
      * Checks whether a user is following another
@@ -32,7 +47,7 @@ public class DynamoDBFollowDAO {
      * @param req the User alias whose count of how many following is desired.
      * @return said count.
      */
-    public IsFollowerResponse isFollower(IsFollowerRequest req) {
+    public IsFollowerResponse isFollower(IsFollowerRequest req) throws DataAccessException {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert req.getFollowerAlias() != null;
         assert req.getFolloweeAlias() != null;
@@ -47,7 +62,7 @@ public class DynamoDBFollowDAO {
      * @param req the User alias whose count of how many following is desired.
      * @return said count.
      */
-    public FollowingCountResponse getFollowingCount(FollowingCountRequest req) {
+    public FollowingCountResponse getFollowingCount(FollowingCountRequest req) throws DataAccessException {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert req.getUserAlias() != null;
         return new FollowingCountResponse(getDummyFollowees().size());
@@ -60,7 +75,7 @@ public class DynamoDBFollowDAO {
      * @param req the request containing the alias of the User whose count of how many being followed is desired.
      * @return said count.
      */
-    public FollowersCountResponse getFollowersCount(FollowersCountRequest req) {
+    public FollowersCountResponse getFollowersCount(FollowersCountRequest req) throws DataAccessException {
         // TODO: uses the dummy data.  Replace with a real implementation.
         assert req.getUserAlias() != null;
         return new FollowersCountResponse(getDummyFollowers().size());
@@ -76,7 +91,7 @@ public class DynamoDBFollowDAO {
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowing(FollowingRequest request) {
+    public FollowingResponse getFollowing(FollowingRequest request) throws DataAccessException {
         // TODO: Generates dummy data. Replace with a real implementation.
         assert request.getLimit() > 0;
         assert request.getFollowerAlias() != null;
@@ -111,7 +126,7 @@ public class DynamoDBFollowDAO {
      *                other information required to satisfy the request.
      * @return the followers.
      */
-    public FollowersResponse getFollowers(FollowersRequest request) {
+    public FollowersResponse getFollowers(FollowersRequest request) throws DataAccessException {
         // TODO: Generates dummy data. Replace with a real implementation.
         assert request.getLimit() > 0;
         assert request.getFolloweeAlias() != null;
@@ -146,7 +161,7 @@ public class DynamoDBFollowDAO {
      * @param allFollowees the generated list of followees from which we are returning paged results.
      * @return the index of the first followee to be returned.
      */
-    private int getFolloweesStartingIndex(String lastFolloweeAlias, List<User> allFollowees) {
+    private int getFolloweesStartingIndex(String lastFolloweeAlias, List<User> allFollowees) throws DataAccessException {
 
         int followeesIndex = 0;
 
@@ -176,7 +191,7 @@ public class DynamoDBFollowDAO {
      * @param allFollowers the generated list of followers from which we are returning paged results.
      * @return the index of the first follower to be returned.
      */
-    private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) {
+    private int getFollowersStartingIndex(String lastFollowerAlias, List<User> allFollowers) throws DataAccessException {
 
         int followersIndex = 0;
 
@@ -202,7 +217,7 @@ public class DynamoDBFollowDAO {
      * @param req contains the data required to fulfill the request.
      * @return success or failure.
      */
-    public FollowResponse follow(FollowRequest req) {
+    public FollowResponse follow(FollowRequest req) throws DataAccessException {
         return new FollowResponse(true, null);
     }
 
@@ -212,7 +227,7 @@ public class DynamoDBFollowDAO {
      * @param req contains the data required to fulfill the request.
      * @return success or failure.
      */
-    public UnfollowResponse unfollow(UnfollowRequest req) {
+    public UnfollowResponse unfollow(UnfollowRequest req) throws DataAccessException {
         return new UnfollowResponse(true, null);
     }
 

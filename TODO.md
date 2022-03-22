@@ -7,12 +7,12 @@
     [X] IFeedDAO
 [] Create a package of classes that implement DAO interfaces using DynamoDB
 [] Implement dependency injection to create DAOs
-[] Create DynamoDB tables and indices
-    [] follows - follower/followee alias, first/last names, image URL
-    [] users - alias, hashed password, first name, last name, image URL, counts
-    [] session/authtokens - token, alias, datetime
-    [] stories - alias, datetime, post, urls, mentions
-    [] feeds - owner alias, timestamp, author alias, post content, more?
+[X] Create DynamoDB tables and indices
+    [X] follows - follower/followee alias, first/last names, image URL
+    [X] users - alias, hashed password, first name, last name, image URL, counts
+    [X] session/authtokens - token, timestamp, alias
+    [X] stories - alias, timestamp, post, urls, mentions
+    [X] feeds - owner alias, timestamp, author alias, post content, more?
 [] Pre-compute every user's feed and store it in DB 
 [] Upload profile pictures to S3
 [] Store hashes of user passwords

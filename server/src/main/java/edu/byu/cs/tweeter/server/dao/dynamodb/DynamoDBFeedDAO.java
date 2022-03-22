@@ -1,5 +1,9 @@
 package edu.byu.cs.tweeter.server.dao.dynamodb;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +14,21 @@ import edu.byu.cs.tweeter.model.net.request.StoryRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 import edu.byu.cs.tweeter.util.FakeData;
 
 public class DynamoDBFeedDAO {
-    public FeedResponse getFeed(FeedRequest req) {
+    private static final String TableName = "feeds";
+    private static final String IndexName = "owner_alias";
+
+    // DynamoDB client
+    private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
+            .standard()
+            .withRegion("us-west-2")
+            .build();
+    private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
+
+    public FeedResponse getFeed(FeedRequest req) throws DataAccessException {
         // TODO: Generates dummy data. Replace with a real implementation.
         assert req.getLimit() > 0;
         assert req.getUserAlias() != null;
