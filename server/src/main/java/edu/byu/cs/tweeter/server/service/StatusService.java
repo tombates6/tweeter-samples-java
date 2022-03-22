@@ -15,6 +15,8 @@ public class StatusService {
         } else if(req.getLimit() <= 0) {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
+        // Check auth token
+        // Get statuses
         return getStatusDAO().getFeed(req);
     }
 

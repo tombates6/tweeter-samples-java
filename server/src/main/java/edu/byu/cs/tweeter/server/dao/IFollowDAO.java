@@ -17,7 +17,7 @@ import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public interface IFollowDAO {
-    IsFollowerResponse isFollower(IsFollowerRequest request) throws DataAccessException;
+    boolean isFollower(String followerAlias, String followeeAlias) throws DataAccessException;
     FollowersResponse getFollowers(FollowersRequest request) throws DataAccessException;
     FollowersCountResponse getFollowersCount(FollowersCountRequest request) throws DataAccessException;
     FollowingResponse getFollowing(FollowingRequest request) throws DataAccessException;

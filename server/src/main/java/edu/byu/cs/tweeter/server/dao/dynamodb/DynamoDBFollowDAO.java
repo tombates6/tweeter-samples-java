@@ -3,6 +3,9 @@ package edu.byu.cs.tweeter.server.dao.dynamodb;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +26,18 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
+import edu.byu.cs.tweeter.server.dao.IFollowDAO;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 import edu.byu.cs.tweeter.util.FakeData;
 
 /**
  * A DAO for accessing 'following' data from the database.
  */
-public class DynamoDBFollowDAO {
+public class DynamoDBFollowDAO implements IFollowDAO {
     private static final String TableName = "follows";
-    private static final String IndexName = "follower_handle";
-    private static final String GSIName = "followee_handle";
+    private static final String IndexName = "followee_handle";
+    private static final String FollowerHandleAttr = "follower_handle";
+    private static final String FolloweeHandleAttr = "followee_handle";
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -41,18 +46,16 @@ public class DynamoDBFollowDAO {
             .build();
     private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 
-    /**
-     * Checks whether a user is following another
-     *
-     * @param req the User alias whose count of how many following is desired.
-     * @return said count.
-     */
-    public IsFollowerResponse isFollower(IsFollowerRequest req) throws DataAccessException {
-        // TODO: uses the dummy data.  Replace with a real implementation.
-        assert req.getFollowerAlias() != null;
-        assert req.getFolloweeAlias() != null;
-        boolean isFollower = new Random().nextInt() > 0;
-        return new IsFollowerResponse(isFollower);
+    @Override
+    public boolean isFollower(String followerAlias, String followeeAlias) throws DataAccessException {
+        Table table = dynamoDB.getTable(TableName);
+
+        try {
+            Item item = table.getItem(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
+            return (item != null);
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException(e.getMessage(), e.getCause());
+        }
     }
 
     /**

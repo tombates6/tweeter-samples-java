@@ -3,23 +3,33 @@ package edu.byu.cs.tweeter.server.dao.dynamodb;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.QueryRequest;
+import com.amazonaws.services.dynamodbv2.model.QueryResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.net.request.FeedRequest;
-import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.net.request.StoryRequest;
-import edu.byu.cs.tweeter.model.net.response.FeedResponse;
-import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
-import edu.byu.cs.tweeter.model.net.response.StoryResponse;
+import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.server.dao.IFeedDAO;
+import edu.byu.cs.tweeter.server.dao.ResultsPage;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
-import edu.byu.cs.tweeter.util.FakeData;
 
-public class DynamoDBFeedDAO {
+public class DynamoDBFeedDAO implements IFeedDAO {
     private static final String TableName = "feeds";
-    private static final String IndexName = "owner_alias";
+    private static final String OwnerAliasAttr = "owner_alias";
+    private static final String TimestampAttr = "timestamp";
+    private static final String PostAttr = "post";
+    private static final String AuthorAliasAttr = "author_alias";
+    private static final String AuthorFirstNameAttr = "first_name";
+    private static final String AuthorLastNameAttr = "last_name";
+    private static final String AuthorImageURLAttr = "image_url";
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -28,66 +38,118 @@ public class DynamoDBFeedDAO {
             .build();
     private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 
-    public FeedResponse getFeed(FeedRequest req) throws DataAccessException {
-        // TODO: Generates dummy data. Replace with a real implementation.
-        assert req.getLimit() > 0;
-        assert req.getUserAlias() != null;
+    @Override
+    public ResultsPage<Status> getFeed(AuthToken authToken, String userAlias, int limit, Status lastStatus) throws DataAccessException {
+        ResultsPage<Status> result = new ResultsPage<>();
 
-        List<Status> allStatuses = getDummyFeed();
-        List<Status> responseStatuses = new ArrayList<>(req.getLimit());
+        Map<String, String> attrNames = new HashMap<>();
+        attrNames.put("#alias", OwnerAliasAttr);
 
-        boolean hasMorePages = false;
+        Map<String, AttributeValue> attrValues = new HashMap<>();
+        attrValues.put(":userAlias", new AttributeValue().withS(userAlias));
 
-        if(req.getLimit() > 0) {
-            if (allStatuses != null) {
-                int statusIndex = getStatusStartingIndex(req.getLastStatus(), allStatuses);
+        Map<String, AttributeValue> startKey = new HashMap<>();
+        startKey.put(OwnerAliasAttr, new AttributeValue().withS(userAlias));
+        startKey.put(TimestampAttr, new AttributeValue().withS(lastStatus.getDate()));
 
-                for(int limitCounter = 0; statusIndex < allStatuses.size() && limitCounter < req.getLimit(); statusIndex++, limitCounter++) {
-                    responseStatuses.add(allStatuses.get(statusIndex));
+        QueryRequest queryRequest = new QueryRequest()
+                .withTableName(TableName)
+                .withKeyConditionExpression("#alias = :userAlias")
+                .withExpressionAttributeNames(attrNames)
+                .withExpressionAttributeValues(attrValues)
+                .withLimit(limit)
+                .withExclusiveStartKey(startKey);
+
+        try {
+            QueryResult queryResult = amazonDynamoDB.query(queryRequest);
+            List<Map<String, AttributeValue>> items = queryResult.getItems();
+            if (items != null) {
+                for (Map<String, AttributeValue> item : items) {
+                    result.addValue(createStatus(item));
                 }
+            }
 
-                hasMorePages = statusIndex < allStatuses.size();
+            Map<String, AttributeValue> lastItem = queryResult.getLastEvaluatedKey();
+            if (lastItem != null) {
+                result.setLastItem(createStatus(lastItem));
+            }
+
+            return result;
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException(e.getMessage(), e.getCause());
+        }
+    }
+
+    private Status createStatus(Map<String, AttributeValue> item) {
+        String post = item.get(PostAttr).getS();
+        String timestamp = item.get(TimestampAttr).getS();
+        List<String> mentions = parseMentions(post);
+        List<String> urls = parseURLs(post);
+
+        String authorAlias = item.get(AuthorAliasAttr).getS();
+        String authorFirstName = item.get(AuthorFirstNameAttr).getS();
+        String authorLastName = item.get(AuthorLastNameAttr).getS();
+        String authorImageURL = item.get(AuthorImageURLAttr).getS();
+        User author = new User(authorFirstName, authorLastName, authorAlias, authorImageURL);
+
+        return new Status(post, author, timestamp, urls, mentions);
+    }
+
+    // TODO make the following three functions shared. They need to be used in the client and the server.
+    private int findUrlEndIndex(String word) {
+        if (word.contains(".com")) {
+            int index = word.indexOf(".com");
+            index += 4;
+            return index;
+        } else if (word.contains(".org")) {
+            int index = word.indexOf(".org");
+            index += 4;
+            return index;
+        } else if (word.contains(".edu")) {
+            int index = word.indexOf(".edu");
+            index += 4;
+            return index;
+        } else if (word.contains(".net")) {
+            int index = word.indexOf(".net");
+            index += 4;
+            return index;
+        } else if (word.contains(".mil")) {
+            int index = word.indexOf(".mil");
+            index += 4;
+            return index;
+        } else {
+            return word.length();
+        }
+    }
+
+    private List<String> parseMentions(String post) {
+        List<String> containedMentions = new ArrayList<>();
+
+        for (String word : post.split("\\s")) {
+            if (word.startsWith("@")) {
+                word = word.replaceAll("[^a-zA-Z0-9]", "");
+                word = "@".concat(word);
+
+                containedMentions.add(word);
             }
         }
 
-        return new FeedResponse(responseStatuses, hasMorePages);
+        return containedMentions;
     }
 
-    List<Status> getDummyStory() {
-        return getFakeData().getFakeStatuses();
-    }
+    private List<String> parseURLs(String post) {
+        List<String> containedUrls = new ArrayList<>();
+        for (String word : post.split("\\s")) {
+            if (word.startsWith("http://") || word.startsWith("https://")) {
 
-    List<Status> getDummyFeed() {
-        return getFakeData().getFakeStatuses();
-    }
+                int index = findUrlEndIndex(word);
 
-    private int getStatusStartingIndex(Status lastStatusAlias, List<Status> allStatuses) {
+                word = word.substring(0, index);
 
-        int statusesIndex = 0;
-
-        if(lastStatusAlias != null) {
-            // This is a paged request for something after the first page. Find the first item
-            // we should return
-            for (int i = 0; i < allStatuses.size(); i++) {
-                if(lastStatusAlias.equals(allStatuses.get(i))) {
-                    // We found the index of the last item returned last time. Increment to get
-                    // to the first one we should return
-                    statusesIndex = i + 1;
-                    break;
-                }
+                containedUrls.add(word);
             }
         }
 
-        return statusesIndex;
-    }
-
-    /**
-     * Returns the {@link FakeData} object used to generate dummy followees.
-     * This is written as a separate method to allow mocking of the {@link FakeData}.
-     *
-     * @return a {@link FakeData} instance.
-     */
-    FakeData getFakeData() {
-        return new FakeData();
+        return containedUrls;
     }
 }

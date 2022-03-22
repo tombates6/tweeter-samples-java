@@ -3,27 +3,29 @@ package edu.byu.cs.tweeter.server.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultsPage {
+import edu.byu.cs.tweeter.model.domain.Status;
+
+public class ResultsPage<T> {
 
 	/**
 	 * The data values returned in this page of results
 	 */
-	private List<String> values;
+	private List<T> values;
 
 	/**
 	 * The last value returned in this page of results
 	 * This value is typically included in the query for the next page of results
 	 */
-	private String lastKey;
+	private T lastItem;
 
 	public ResultsPage() {
 		values = new ArrayList<>();
-		lastKey = null;
+		lastItem = null;
 	}
 
 	// Values property
 
-	public void addValue(String v) {
+	public void addValue(T v) {
 		values.add(v);
 	}
 
@@ -31,21 +33,21 @@ public class ResultsPage {
 		return (values != null && values.size() > 0);
 	}
 
-	public List<String> getValues() {
+	public List<T> getValues() {
 		return values;
 	}
 
-	// LastKey property
+	// LastItem property
 
-	public void setLastKey(String value) {
-		lastKey = value;
+	public void setLastItem(T value) {
+		lastItem = value;
 	}
 
-	public String getLastKey() {
-		return lastKey;
+	public T getLastItem() {
+		return lastItem;
 	}
 
-	public boolean hasLastKey() {
-		return (lastKey != null && lastKey.length() > 0);
+	public boolean hasLastItem() {
+		return (lastItem != null);
 	}
 }
