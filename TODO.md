@@ -9,7 +9,7 @@
     [X] DynamoDBUserDAO
     [X] DynamoDBFollowDAO
     [X] DynamoDBAuthDAO
-    [] DynamoDBStoryDAO
+    [X] DynamoDBStoryDAO
     [X] DynamoDBFeedDAO
 [] Implement dependency injection to create DAOs and use them in service layer
 [X] Create DynamoDB tables and indices

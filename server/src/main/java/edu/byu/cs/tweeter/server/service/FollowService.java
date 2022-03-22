@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.server.service;
 
+import javax.inject.Inject;
+
 import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
@@ -14,12 +16,22 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
+import edu.byu.cs.tweeter.server.dao.IAuthDAO;
+import edu.byu.cs.tweeter.server.dao.IFollowDAO;
 import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFollowDAO;
 
 /**
  * Contains the business logic for getting the users a user is following.
  */
 public class FollowService {
+    private final IAuthDAO authDAO;
+    private final IFollowDAO followDAO;
+
+    @Inject
+    public FollowService(IAuthDAO authDAO, IFollowDAO followDAO) {
+        this.authDAO = authDAO;
+        this.followDAO = followDAO;
+    }
 
     /**
      * Returns whether a user is following another user
@@ -33,7 +45,7 @@ public class FollowService {
         } else if(request.getFollowerAlias() == null) {
             throw new RuntimeException("[BadRequest] Request needs to have a follower alias");
         }
-        return getFollowingDAO().isFollower(request);
+        return followDAO.isFollower(request.getFollowerAlias(), request.getFolloweeAlias());
     }
 
     /**
@@ -51,7 +63,7 @@ public class FollowService {
         } else if(request.getLimit() <= 0) {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
-        return getFollowingDAO().getFollowers(request);
+        return followDAO.getFollowers(request);
     }
 
     /**
@@ -65,7 +77,7 @@ public class FollowService {
         if(request.getUserAlias() == null) {
             throw new RuntimeException("[BadRequest] Request needs to have a followee alias");
         }
-        return getFollowingDAO().getFollowersCount(request);
+        return followDAO.getFollowersCount(request);
     }
 
     /**
@@ -83,7 +95,7 @@ public class FollowService {
         } else if(request.getLimit() <= 0) {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
-        return getFollowingDAO().getFollowing(request);
+        return followDAO.getFollowing(request);
     }
 
     /**
@@ -97,7 +109,7 @@ public class FollowService {
         if(request.getUserAlias() == null) {
             throw new RuntimeException("[BadRequest] Request needs to have a user alias");
         }
-        return getFollowingDAO().getFollowingCount(request);
+        return followDAO.getFollowingCount(request);
     }
 
     /**
@@ -107,7 +119,7 @@ public class FollowService {
      * @return success or failure.
      */
     public FollowResponse follow(FollowRequest req) {
-        return getFollowingDAO().follow(req);
+        return followDAO.follow(req);
     }
 
     /**
@@ -117,17 +129,6 @@ public class FollowService {
      * @return success or failure.
      */
     public UnfollowResponse unfollow(UnfollowRequest req) {
-        return getFollowingDAO().unfollow(req);
-    }
-
-    /**
-     * Returns an instance of {@link DynamoDBFollowDAO}. Allows mocking of the FollowDAO class
-     * for testing purposes. All usages of FollowDAO should get their FollowDAO
-     * instance from this method to allow for mocking of the instance.
-     *
-     * @return the instance.
-     */
-    DynamoDBFollowDAO getFollowingDAO() {
-        return new DynamoDBFollowDAO();
+        return followDAO.unfollow(req);
     }
 }
