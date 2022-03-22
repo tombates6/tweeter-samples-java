@@ -81,7 +81,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
             return result;
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -98,7 +98,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
                     .withString(ImageURLAttr, status.getUser().getImageUrl());
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 

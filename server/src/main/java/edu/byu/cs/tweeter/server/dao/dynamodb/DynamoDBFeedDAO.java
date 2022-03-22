@@ -76,7 +76,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
 
             return result;
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 

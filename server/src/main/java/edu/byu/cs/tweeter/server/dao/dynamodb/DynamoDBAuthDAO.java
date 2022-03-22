@@ -45,7 +45,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
                     .withString(AliasAttr, alias);
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
 
         return authToken;
@@ -58,7 +58,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
         try {
             table.deleteItem(TokenAttr, req.getToken());
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -81,7 +81,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
 
             return item.getString(AliasAttr);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -92,7 +92,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
         try {
             table.deleteItem(TokenAttr, authToken.getToken());
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 

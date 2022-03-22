@@ -67,7 +67,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
             Item item = table.getItem(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
             return (item != null);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -128,7 +128,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
                     .withPrimaryKey(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -142,7 +142,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
         try {
             table.deleteItem(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -222,7 +222,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
             return results;
 
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
 
     }

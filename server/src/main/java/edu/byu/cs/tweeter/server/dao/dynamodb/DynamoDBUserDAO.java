@@ -33,7 +33,7 @@ public class DynamoDBUserDAO implements IUserDAO {
 
         try {
             Item item = table.getItem(AliasAttr, alias);
-            if (item == null) throw new DataAccessException("No such user exists!");
+            if (item == null) throw new DataAccessException("[BadRequest] User not found");
             return new User(
                     item.getString(FirstNameAttr),
                     item.getString(LastNameAttr),
@@ -41,7 +41,7 @@ public class DynamoDBUserDAO implements IUserDAO {
                     item.getString(ImageURLAttr)
             );
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -52,7 +52,7 @@ public class DynamoDBUserDAO implements IUserDAO {
             Item item = table.getItem(AliasAttr, alias);
             return item != null && item.getString(PasswordAttr).equals(password);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
@@ -68,7 +68,7 @@ public class DynamoDBUserDAO implements IUserDAO {
                     .withString(ImageURLAttr, req.getImage());
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
-            throw new DataAccessException(e.getMessage(), e.getCause());
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 }
