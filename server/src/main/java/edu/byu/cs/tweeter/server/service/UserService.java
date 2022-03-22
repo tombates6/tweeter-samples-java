@@ -16,24 +16,12 @@ import edu.byu.cs.tweeter.util.Pair;
 public class UserService {
 
     public LoginResponse login(LoginRequest request) {
-        if(request.getUsername() == null){
-            throw new RuntimeException("[BadRequest] Missing a username");
-        } else if(request.getPassword() == null) {
-            throw new RuntimeException("[BadRequest] Missing a password");
-        }
-
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User user = getDummyUser();
-        AuthToken authToken = getDummyAuthToken();
-        return new LoginResponse(user, authToken);
     }
 
     public LogoutResponse logout(LogoutRequest req) {
         if(req.getAuthToken() == null){
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
-        // TODO: Generates dummy data. Replace with a real implementation.
-        return new LogoutResponse(true, null);
     }
 
     public RegisterResponse register(RegisterRequest req) {
@@ -46,19 +34,9 @@ public class UserService {
         } else if (req.getImage() == null) {
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User registeredUser = getFakeData().getFirstUser();
-        AuthToken authToken = getFakeData().getAuthToken();
-        return new RegisterResponse(new Pair<>(registeredUser, authToken));
     }
 
     public UserResponse getUserProfile(UserRequest req) {
-        if (req.getAlias() == null) {
-            throw new RuntimeException("[BadRequest] Missing an alias");
-        }
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User user = getFakeData().findUserByAlias(req.getAlias());
-        return new UserResponse(user);
     }
 
     /**

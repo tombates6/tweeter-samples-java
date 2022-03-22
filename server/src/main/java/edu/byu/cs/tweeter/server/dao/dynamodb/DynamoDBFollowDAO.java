@@ -24,7 +24,7 @@ import edu.byu.cs.tweeter.util.FakeData;
 /**
  * A DAO for accessing 'following' data from the database.
  */
-public class FollowDAO {
+public class DynamoDBFollowDAO {
 
     /**
      * Checks whether a user is following another

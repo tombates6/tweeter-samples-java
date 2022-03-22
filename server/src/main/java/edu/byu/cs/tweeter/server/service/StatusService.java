@@ -6,7 +6,7 @@ import edu.byu.cs.tweeter.model.net.request.StoryRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
-import edu.byu.cs.tweeter.server.dao.dynamodb.StatusDAO;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFeedDAO;
 
 public class StatusService {
     public FeedResponse getFeed(FeedRequest req) {
@@ -35,13 +35,13 @@ public class StatusService {
     }
 
     /**
-     * Returns an instance of {@link StatusDAO}. Allows mocking of the StatusDAO class
+     * Returns an instance of {@link DynamoDBFeedDAO}. Allows mocking of the StatusDAO class
      * for testing purposes. All usages of StatusDAO should get their StatusDAO
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    StatusDAO getStatusDAO() {
-        return new StatusDAO();
+    DynamoDBFeedDAO getStatusDAO() {
+        return new DynamoDBFeedDAO();
     }
 }

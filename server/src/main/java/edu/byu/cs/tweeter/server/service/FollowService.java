@@ -14,7 +14,7 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
-import edu.byu.cs.tweeter.server.dao.dynamodb.FollowDAO;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFollowDAO;
 
 /**
  * Contains the business logic for getting the users a user is following.
@@ -39,7 +39,7 @@ public class FollowService {
     /**
      * Returns the users that are following the user specified in the request. Uses information in
      * the request object to limit the number of followers returned and to return the next set of
-     * followers after any that were returned in a previous request. Uses the {@link FollowDAO} to
+     * followers after any that were returned in a previous request. Uses the {@link DynamoDBFollowDAO} to
      * get the followers.
      *
      * @param request contains the data required to fulfill the request.
@@ -56,7 +56,7 @@ public class FollowService {
 
     /**
      * Returns the count of users that are following the user specified in the request.
-     * Uses the {@link FollowDAO} to get the count.
+     * Uses the {@link DynamoDBFollowDAO} to get the count.
      *
      * @param request contains the data required to fulfill the request.
      * @return the count.
@@ -71,7 +71,7 @@ public class FollowService {
     /**
      * Returns the users that the user specified in the request is following. Uses information in
      * the request object to limit the number of followees returned and to return the next set of
-     * followees after any that were returned in a previous request. Uses the {@link FollowDAO} to
+     * followees after any that were returned in a previous request. Uses the {@link DynamoDBFollowDAO} to
      * get the followees.
      *
      * @param request contains the data required to fulfill the request.
@@ -88,7 +88,7 @@ public class FollowService {
 
     /**
      * Returns the count of users that are following the user specified in the request.
-     * Uses the {@link FollowDAO} to get the count.
+     * Uses the {@link DynamoDBFollowDAO} to get the count.
      *
      * @param request contains the data required to fulfill the request.
      * @return the count.
@@ -121,13 +121,13 @@ public class FollowService {
     }
 
     /**
-     * Returns an instance of {@link FollowDAO}. Allows mocking of the FollowDAO class
+     * Returns an instance of {@link DynamoDBFollowDAO}. Allows mocking of the FollowDAO class
      * for testing purposes. All usages of FollowDAO should get their FollowDAO
      * instance from this method to allow for mocking of the instance.
      *
      * @return the instance.
      */
-    FollowDAO getFollowingDAO() {
-        return new FollowDAO();
+    DynamoDBFollowDAO getFollowingDAO() {
+        return new DynamoDBFollowDAO();
     }
 }
