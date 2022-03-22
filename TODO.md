@@ -10,7 +10,7 @@
     [] DynamoDBFollowDAO
     [X] DynamoDBAuthDAO
     [] DynamoDBStoryDAO
-    [] DynamoDBFeedDAO
+    [X] DynamoDBFeedDAO
 [] Implement dependency injection to create DAOs and use them in service layer
 [X] Create DynamoDB tables and indices
     [X] follows - follower/followee alias, first/last names, image URL
