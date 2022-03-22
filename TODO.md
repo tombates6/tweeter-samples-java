@@ -5,13 +5,13 @@
     [X] IAuthDAO
     [X] IStoryDAO
     [X] IFeedDAO
-[] Create a package of classes that implement DAO interfaces using DynamoDB
+[X] Create a package of classes that implement DAO interfaces using DynamoDB
     [X] DynamoDBUserDAO
     [X] DynamoDBFollowDAO
     [X] DynamoDBAuthDAO
     [X] DynamoDBStoryDAO
     [X] DynamoDBFeedDAO
-[] Implement dependency injection to create DAOs and use them in service layer
+[X] Implement dependency injection to create DAOs and use them in service layer
 [X] Create DynamoDB tables and indices
     [X] follows - follower/followee alias, first/last names, image URL
     [X] users - alias, hashed password, first name, last name, image URL, counts
