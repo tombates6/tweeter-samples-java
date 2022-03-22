@@ -10,8 +10,8 @@ import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public interface IAuthDAO {
-    AuthToken login(LoginRequest req) throws DataAccessException;
+    AuthToken login(String alias) throws DataAccessException;
     void logout(AuthToken authToken) throws DataAccessException;
-    boolean validToken(AuthToken authToken) throws DataAccessException;
+    String getAlias(AuthToken authToken) throws DataAccessException;
     void expireToken(AuthToken authToken) throws DataAccessException;
 }

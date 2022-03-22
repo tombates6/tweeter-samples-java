@@ -19,7 +19,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     private static final String TableName = "auth";
     private static final String TokenAttr = "token";
     private static final String TimestampAttr = "timestamp";
-    // TODO add user alias to table and return it in validLogin(). Maybe change the name of that fn too.
+    private static final String AliasAttr = "alias";
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -29,7 +29,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 
     @Override
-    public AuthToken login(LoginRequest req) throws DataAccessException {
+    public AuthToken login(String alias) throws DataAccessException {
         AuthToken authToken = new AuthToken(
                 UUID.randomUUID().toString(),
                 String.valueOf(Instant.now().toEpochMilli())
@@ -37,7 +37,10 @@ public class DynamoDBAuthDAO implements IAuthDAO {
         Table table = dynamoDB.getTable(TableName);
 
         try {
-            Item item = new Item().withPrimaryKey(TokenAttr, authToken.getToken()).withString(TimestampAttr, authToken.getDatetime());
+            Item item = new Item()
+                    .withPrimaryKey(TokenAttr, authToken.getToken())
+                    .withString(TimestampAttr, authToken.getDatetime())
+                    .withString(AliasAttr, alias);
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException(e.getMessage(), e.getCause());
@@ -58,12 +61,15 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     }
 
     @Override
-    public boolean validToken(AuthToken authToken) throws DataAccessException {
+    public String getAlias(AuthToken authToken) throws DataAccessException {
         Table table = dynamoDB.getTable(TableName);
 
         try {
             Item item = table.getItem(TokenAttr, authToken.getToken());
-            return (item != null) && !isExpired(item.getString(TimestampAttr));
+            if (item == null || isExpired(item.getString(TimestampAttr))) {
+                throw new DataAccessException("Session Expired");
+            }
+            return item.getString(AliasAttr);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException(e.getMessage(), e.getCause());
         }
