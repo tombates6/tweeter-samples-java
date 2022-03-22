@@ -19,6 +19,8 @@ public class RegisterPresenter extends AuthPresenter {
 
     public void register(String firstName, String lastName, String alias, String password, BitmapDrawable imageToUpload) {
 
+        // TODO implement hashing for the password
+
         // Convert image to byte array.
         Bitmap image = imageToUpload.getBitmap();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

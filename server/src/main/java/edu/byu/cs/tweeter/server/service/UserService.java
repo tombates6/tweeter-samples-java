@@ -16,12 +16,21 @@ import edu.byu.cs.tweeter.util.Pair;
 public class UserService {
 
     public LoginResponse login(LoginRequest request) {
+        if (request.getUsername() == null) {
+            throw new RuntimeException("[BadRequest] Missing a username");
+        } else if (request.getPassword() == null) {
+            throw new RuntimeException("[BadRequest] Missing a password");
+        }
+        // Check UserDAO if password matches
+        // Use AuthDAO to record a new AuthToken
+        // Get User Profile from UserDAO
     }
 
     public LogoutResponse logout(LogoutRequest req) {
         if(req.getAuthToken() == null){
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
+        // Remove token from AuthDAO (or invalidate?)
     }
 
     public RegisterResponse register(RegisterRequest req) {
@@ -34,9 +43,16 @@ public class UserService {
         } else if (req.getImage() == null) {
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
+        // Add user to UserDAO
+        // login through AuthDAO
     }
 
     public UserResponse getUserProfile(UserRequest req) {
+        if (req.getAlias() == null) {
+            throw new RuntimeException("[BadRequest] Missing an alias");
+        }
+        // Check Auth token with AuthDAO
+        // Get user profile from UserDAO
     }
 
     /**
