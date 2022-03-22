@@ -103,7 +103,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
      * @return the followees.
      */
     public ResultsPage<User> getFollowing(String followerAlias, int limit, String lastFolloweeAlias) throws DataAccessException {
-        return queryTable(followerAlias, false, true, lastFolloweeAlias, limit);
+        return queryTable(followerAlias, true, true, lastFolloweeAlias, limit);
     }
 
     /**
@@ -113,28 +113,37 @@ public class DynamoDBFollowDAO implements IFollowDAO {
      *
      * @return the followers.
      */
-    public ResultsPage<User> getFollowers(String followerAlias, int limit, String lastFolloweeAlias) throws DataAccessException {
-        return queryTable(followerAlias, false, true, lastFolloweeAlias, limit);
+    public ResultsPage<User> getFollowers(String followeeAlias, int limit, String lastFollowerAlias) throws DataAccessException {
+        return queryTable(followeeAlias, false, true, lastFollowerAlias, limit);
     }
 
     /**
      * Follows the user that the user specified in the request.
-     *
-     * @param req contains the data required to fulfill the request.
-     * @return success or failure.
      */
-    public void follow(User selectedUser) throws DataAccessException {
+    public void follow(String followerAlias, String followeeAlias) throws DataAccessException {
+        Table table = dynamoDB.getTable(TableName);
 
+        try {
+            Item item = new Item()
+                    .withPrimaryKey(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
+            table.putItem(item);
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException(e.getMessage(), e.getCause());
+        }
     }
 
     /**
      * Unfollows the user that the user specified in the request.
      *
-     * @param req contains the data required to fulfill the request.
-     * @return success or failure.
      */
-    public UnfollowResponse unfollow(UnfollowRequest req) throws DataAccessException {
-        return new UnfollowResponse(true, null);
+    public void unfollow(String followerAlias, String followeeAlias) throws DataAccessException {
+        Table table = dynamoDB.getTable(TableName);
+
+        try {
+            table.deleteItem(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException(e.getMessage(), e.getCause());
+        }
     }
 
 

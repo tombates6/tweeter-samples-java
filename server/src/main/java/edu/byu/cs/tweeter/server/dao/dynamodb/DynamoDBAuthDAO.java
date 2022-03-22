@@ -19,6 +19,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     private static final String TableName = "auth";
     private static final String TokenAttr = "token";
     private static final String TimestampAttr = "timestamp";
+    // TODO add user alias to table and return it in validLogin(). Maybe change the name of that fn too.
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
