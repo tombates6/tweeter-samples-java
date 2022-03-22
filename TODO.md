@@ -7,7 +7,7 @@
     [X] IFeedDAO
 [] Create a package of classes that implement DAO interfaces using DynamoDB
     [X] DynamoDBUserDAO
-    [] DynamoDBFollowDAO
+    [X] DynamoDBFollowDAO
     [X] DynamoDBAuthDAO
     [] DynamoDBStoryDAO
     [X] DynamoDBFeedDAO
