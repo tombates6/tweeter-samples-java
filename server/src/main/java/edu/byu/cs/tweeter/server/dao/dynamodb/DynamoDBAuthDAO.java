@@ -8,6 +8,8 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -69,6 +71,14 @@ public class DynamoDBAuthDAO implements IAuthDAO {
             if (item == null || isExpired(item.getString(TimestampAttr))) {
                 throw new DataAccessException("Session Expired");
             }
+
+            // Update Auth Token
+            Map<String, String> attrNames = new HashMap<>();
+            attrNames.put("#ts", TimestampAttr);
+            Map<String, Object> attrValues = new HashMap<>();
+            attrValues.put(":val", authToken.getDatetime());
+            table.updateItem(TokenAttr, authToken.getToken(), "set #ts = :val", attrNames, attrValues);
+
             return item.getString(AliasAttr);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException(e.getMessage(), e.getCause());
