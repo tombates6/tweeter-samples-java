@@ -91,7 +91,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
         try {
             Item item = table.getItem(TokenAttr, authToken.getToken());
             if (item == null || isExpired(item.getString(TimestampAttr))) {
-                throw new DataAccessException("Session Expired");
+                throw new RuntimeException("[BadRequest] Session Expired");
             }
 
             // Update Auth Token

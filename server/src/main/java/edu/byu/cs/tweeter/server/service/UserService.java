@@ -2,16 +2,21 @@ package edu.byu.cs.tweeter.server.service;
 
 import com.google.inject.Inject;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 import edu.byu.cs.tweeter.model.net.request.LogoutRequest;
 import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.net.request.UserRequest;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
 import edu.byu.cs.tweeter.model.net.response.LogoutResponse;
+import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.IUserDAO;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
+import edu.byu.cs.tweeter.util.Pair;
 
 public class UserService {
     private final IAuthDAO authDAO;
@@ -23,22 +28,32 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
-    public LoginResponse login(LoginRequest request) {
-        if (request.getUsername() == null) {
+    public LoginResponse login(LoginRequest req) {
+        if (req.getUsername() == null) {
             throw new RuntimeException("[BadRequest] Missing a username");
-        } else if (request.getPassword() == null) {
+        } else if (req.getPassword() == null) {
             throw new RuntimeException("[BadRequest] Missing a password");
         }
-        // Check UserDAO if password matches
-        // Use AuthDAO to record a new AuthToken
-        // Get User Profile from UserDAO
+        try {
+            userDAO.validatePassword(req.getUsername(), req.getPassword());
+            User currUser = userDAO.getUserProfile(req.getUsername());
+            AuthToken authToken = authDAO.login(req.getUsername());
+            return new LoginResponse(currUser, authToken);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public LogoutResponse logout(LogoutRequest req) {
         if(req.getAuthToken() == null){
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
-        // Remove token from AuthDAO (or invalidate?)
+        try {
+            authDAO.logout(req.getAuthToken());
+            return new LogoutResponse(true, null);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public RegisterResponse register(RegisterRequest req) {
@@ -51,7 +66,21 @@ public class UserService {
         } else if (req.getImage() == null) {
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
+        try {
+            User newUser = new User(
+                    req.getUsername(),
+                    req.getFirstName(),
+                    req.getLastName(),
+                    req.getImage()
+            );
+            userDAO.addUser(newUser, req.getPassword());
+            AuthToken authToken = authDAO.login(req.getUsername());
+            return new RegisterResponse(new Pair<>(newUser, authToken));
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         // Add user to UserDAO
+
         // login through AuthDAO
     }
 
@@ -59,7 +88,12 @@ public class UserService {
         if (req.getAlias() == null) {
             throw new RuntimeException("[BadRequest] Missing an alias");
         }
-        // Check Auth token with AuthDAO
-        // Get user profile from UserDAO
+        try {
+            authDAO.validateToken(req.getAuthToken());
+            User currUser = userDAO.getUserProfile(req.getAlias());
+            return new UserResponse(currUser);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

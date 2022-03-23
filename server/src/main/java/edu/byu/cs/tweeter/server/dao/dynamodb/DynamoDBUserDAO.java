@@ -46,26 +46,28 @@ public class DynamoDBUserDAO implements IUserDAO {
     }
 
     @Override
-    public boolean validPassword(String alias, String password) throws DataAccessException {
+    public void validatePassword(String alias, String password) throws DataAccessException {
         Table table = dynamoDB.getTable(TableName);
         try {
             Item item = table.getItem(AliasAttr, alias);
-            return item != null && item.getString(PasswordAttr).equals(password);
+            if (item == null || !item.getString(PasswordAttr).equals(password)) {
+                throw new RuntimeException("[BadRequest] Incorrect Username or Password");
+            }
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public void addUser(RegisterRequest req) throws DataAccessException {
+    public void addUser(User newUser, String password) throws DataAccessException {
         Table table = dynamoDB.getTable(TableName);
         try {
             Item item = new Item()
-                    .withPrimaryKey(AliasAttr, req.getUsername())
-                    .withString(PasswordAttr, req.getPassword())
-                    .withString(FirstNameAttr, req.getFirstName())
-                    .withString(LastNameAttr, req.getLastName())
-                    .withString(ImageURLAttr, req.getImage());
+                    .withPrimaryKey(AliasAttr, newUser.getAlias())
+                    .withString(PasswordAttr, password)
+                    .withString(FirstNameAttr, newUser.getFirstName())
+                    .withString(LastNameAttr, newUser.getLastName())
+                    .withString(ImageURLAttr, newUser.getImageUrl());
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
