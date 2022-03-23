@@ -10,10 +10,10 @@ import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.net.request.UserRequest;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
 import edu.byu.cs.tweeter.model.net.response.LogoutResponse;
-import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
+import edu.byu.cs.tweeter.server.dao.IImageDAO;
 import edu.byu.cs.tweeter.server.dao.IUserDAO;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 import edu.byu.cs.tweeter.util.Pair;
@@ -21,11 +21,13 @@ import edu.byu.cs.tweeter.util.Pair;
 public class UserService {
     private final IAuthDAO authDAO;
     private final IUserDAO userDAO;
+    private final IImageDAO imageDAO;
 
     @Inject
-    public UserService(IAuthDAO authDAO, IUserDAO userDAO) {
+    public UserService(IAuthDAO authDAO, IUserDAO userDAO, IImageDAO imageDAO) {
         this.authDAO = authDAO;
         this.userDAO = userDAO;
+        this.imageDAO = imageDAO;
     }
 
     public LoginResponse login(LoginRequest req) {
@@ -67,11 +69,12 @@ public class UserService {
             throw new RuntimeException("[BadRequest] Missing auth token");
         }
         try {
+            String imageURL = imageDAO.uploadImage(req.getUsername(), req.getImage());
             User newUser = new User(
                     req.getUsername(),
                     req.getFirstName(),
                     req.getLastName(),
-                    req.getImage()
+                    imageURL
             );
             userDAO.addUser(newUser, req.getPassword());
             AuthToken authToken = authDAO.login(req.getUsername());
@@ -79,9 +82,6 @@ public class UserService {
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }
-        // Add user to UserDAO
-
-        // login through AuthDAO
     }
 
     public UserResponse getUserProfile(UserRequest req) {

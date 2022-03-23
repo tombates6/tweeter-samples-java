@@ -20,7 +20,7 @@
     [X] feeds - owner alias, timestamp, author alias, post content, more?
 [X] Implement DAOs in service layer (get rid of errors)
 [X] Pre-compute every user's feed
-[] Upload profile pictures to S3
+[X] Upload profile pictures to S3
 [] Store hashes of user passwords
 [] Expire auth tokens after N minutes of inactivity
 [] Test and work out bugs

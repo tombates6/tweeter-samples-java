@@ -3,7 +3,9 @@ package edu.byu.cs.tweeter.server.dao.dynamodb.injection;
 import com.google.inject.AbstractModule;
 
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
+import edu.byu.cs.tweeter.server.dao.IImageDAO;
 import edu.byu.cs.tweeter.server.dao.IUserDAO;
+import edu.byu.cs.tweeter.server.dao.S3ImageDAO;
 import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBAuthDAO;
 import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBUserDAO;
 
@@ -12,5 +14,6 @@ public class UserServiceModule extends AbstractModule {
     public void configure() {
         bind(IAuthDAO.class).to(DynamoDBAuthDAO.class);
         bind(IUserDAO.class).to(DynamoDBUserDAO.class);
+        bind(IImageDAO.class).to(S3ImageDAO.class);
     }
 }
