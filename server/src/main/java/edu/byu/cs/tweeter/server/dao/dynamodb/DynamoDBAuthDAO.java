@@ -85,6 +85,28 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     }
 
     @Override
+    public void validateToken(AuthToken authToken) throws DataAccessException {
+        Table table = dynamoDB.getTable(TableName);
+
+        try {
+            Item item = table.getItem(TokenAttr, authToken.getToken());
+            if (item == null || isExpired(item.getString(TimestampAttr))) {
+                throw new DataAccessException("Session Expired");
+            }
+
+            // Update Auth Token
+            Map<String, String> attrNames = new HashMap<>();
+            attrNames.put("#ts", TimestampAttr);
+            Map<String, Object> attrValues = new HashMap<>();
+            attrValues.put(":val", authToken.getDatetime());
+            table.updateItem(TokenAttr, authToken.getToken(), "set #ts = :val", attrNames, attrValues);
+
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
     public void expireToken(AuthToken authToken) throws DataAccessException {
         Table table = dynamoDB.getTable(TableName);
 

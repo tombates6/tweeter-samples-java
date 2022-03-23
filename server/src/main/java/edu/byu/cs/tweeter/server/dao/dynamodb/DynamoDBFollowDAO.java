@@ -13,8 +13,10 @@ import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import edu.byu.cs.tweeter.model.domain.User;
@@ -100,6 +102,12 @@ public class DynamoDBFollowDAO implements IFollowDAO {
      */
     public ResultsPage<User> getFollowers(String followeeAlias, int limit, String lastFollowerAlias) throws DataAccessException {
         return queryTable(followeeAlias, false, true, lastFollowerAlias, limit);
+    }
+
+    @Override
+    public List<User> getAllFollowers(String followeeAlias) throws DataAccessException {
+        ResultsPage<User> results = queryTable(followeeAlias, false, false, null, 0);
+        return results.getValues();
     }
 
     /**

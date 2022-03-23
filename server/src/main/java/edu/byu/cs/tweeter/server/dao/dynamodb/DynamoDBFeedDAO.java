@@ -38,7 +38,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
     private static DynamoDB dynamoDB = new DynamoDB(amazonDynamoDB);
 
     @Override
-    public ResultsPage<Status> getFeed(AuthToken authToken, String userAlias, int limit, Status lastStatus) throws DataAccessException {
+    public ResultsPage<Status> getFeed(String userAlias, int limit, Status lastStatus) throws DataAccessException {
         ResultsPage<Status> result = new ResultsPage<>();
 
         Map<String, String> attrNames = new HashMap<>();
@@ -77,6 +77,11 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
+    }
+
+    @Override
+    public void updateFeeds(List<User> followers, Status status) {
+        // TODO update feeds based on the user who follows
     }
 
     private Status createStatus(Map<String, AttributeValue> item) {
