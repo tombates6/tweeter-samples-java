@@ -49,7 +49,7 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a follower alias");
         }
         try {
-            authDAO.getAlias(request.getAuthToken());
+            authDAO.validateToken(request.getAuthToken());
             boolean isFollower = followDAO.isFollower(request.getFollowerAlias(), request.getFolloweeAlias());
             return new IsFollowerResponse(isFollower);
         } catch (DataAccessException e) {
@@ -73,7 +73,7 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
         try {
-            authDAO.getAlias(request.getAuthToken());
+            authDAO.validateToken(request.getAuthToken());
             ResultsPage<User> results = followDAO.getFollowers(
                     request.getFolloweeAlias(),
                     request.getLimit(),
@@ -97,7 +97,7 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a followee alias");
         }
         try {
-            authDAO.getAlias(request.getAuthToken());
+            authDAO.validateToken(request.getAuthToken());
             int count = followDAO.getFollowersCount(request.getUserAlias());
             return new FollowersCountResponse(count);
         } catch (DataAccessException e) {
@@ -121,7 +121,7 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
         try {
-            authDAO.getAlias(request.getAuthToken());
+            authDAO.validateToken(request.getAuthToken());
             ResultsPage<User> results = followDAO.getFollowing(
                     request.getFollowerAlias(),
                     request.getLimit(),
@@ -145,7 +145,7 @@ public class FollowService {
             throw new RuntimeException("[BadRequest] Request needs to have a user alias");
         }
         try {
-            authDAO.getAlias(request.getAuthToken());
+            authDAO.validateToken(request.getAuthToken());
             int count = followDAO.getFollowingCount(request.getUserAlias());
             return new FollowingCountResponse(count);
         } catch (DataAccessException e) {
