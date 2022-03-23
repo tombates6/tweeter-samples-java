@@ -21,6 +21,7 @@
 [X] Implement DAOs in service layer (get rid of errors)
 [X] Pre-compute every user's feed
 [X] Upload profile pictures to S3
+[] Use numbers for timestamps
 [] Store hashes of user passwords
-[] Expire auth tokens after N minutes of inactivity
+[X] Expire auth tokens after N minutes of inactivity
 [] Test and work out bugs

@@ -71,7 +71,7 @@ public class ServerFacadeIntegrationTest {
         assertTrue(res.isSuccess());
         assertEquals(res.getLoginResult().getFirst(), testUser);
         assertNull(res.getLoginResult().getSecond().token);
-        assertNull(res.getLoginResult().getSecond().datetime);
+        assertNull(res.getLoginResult().getSecond().timestamp);
     }
 
     @Test(expected = TweeterRemoteException.class)

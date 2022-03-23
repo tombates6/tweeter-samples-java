@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
@@ -21,6 +22,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     private static final String TokenAttr = "token";
     private static final String TimestampAttr = "timestamp";
     private static final String AliasAttr = "alias";
+    private static final int MIN_ACTIVE_MINUTES = 1;
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -33,14 +35,14 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     public AuthToken login(String alias) throws DataAccessException {
         AuthToken authToken = new AuthToken(
                 UUID.randomUUID().toString(),
-                String.valueOf(Instant.now().toEpochMilli())
+                Instant.now().toEpochMilli()
         );
         Table table = dynamoDB.getTable(TableName);
 
         try {
             Item item = new Item()
                     .withPrimaryKey(TokenAttr, authToken.getToken())
-                    .withString(TimestampAttr, authToken.getDatetime())
+                    .withLong(TimestampAttr, authToken.getTimestamp())
                     .withString(AliasAttr, alias);
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
@@ -67,7 +69,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
 
         try {
             Item item = table.getItem(TokenAttr, authToken.getToken());
-            if (item == null || isExpired(item.getString(TimestampAttr))) {
+            if (item == null || isExpired(item.getLong(TimestampAttr))) {
                 throw new DataAccessException("Session Expired");
             }
 
@@ -75,7 +77,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
             Map<String, String> attrNames = new HashMap<>();
             attrNames.put("#ts", TimestampAttr);
             Map<String, Object> attrValues = new HashMap<>();
-            attrValues.put(":val", authToken.getDatetime());
+            attrValues.put(":val", authToken.getTimestamp());
             table.updateItem(TokenAttr, authToken.getToken(), "set #ts = :val", attrNames, attrValues);
 
             return item.getString(AliasAttr);
@@ -90,7 +92,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
 
         try {
             Item item = table.getItem(TokenAttr, authToken.getToken());
-            if (item == null || isExpired(item.getString(TimestampAttr))) {
+            if (item == null || isExpired(item.getLong(TimestampAttr))) {
                 throw new RuntimeException("[BadRequest] Session Expired");
             }
 
@@ -98,7 +100,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
             Map<String, String> attrNames = new HashMap<>();
             attrNames.put("#ts", TimestampAttr);
             Map<String, Object> attrValues = new HashMap<>();
-            attrValues.put(":val", authToken.getDatetime());
+            attrValues.put(":val", authToken.getTimestamp());
             table.updateItem(TokenAttr, authToken.getToken(), "set #ts = :val", attrNames, attrValues);
 
         } catch (AmazonDynamoDBException e) {
@@ -117,8 +119,8 @@ public class DynamoDBAuthDAO implements IAuthDAO {
         }
     }
 
-    private boolean isExpired(String timestamp) {
-        // TODO compare with current timestamp to make sure it's active
-        return false;
+    private boolean isExpired(long oldTimestamp) {
+        long now = Instant.now().toEpochMilli();
+        return TimeUnit.MILLISECONDS.toSeconds(now - oldTimestamp) > MIN_ACTIVE_MINUTES;
     }
 }
