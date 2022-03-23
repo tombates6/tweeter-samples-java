@@ -18,8 +18,8 @@
     [X] session/authtokens - token, timestamp, alias
     [X] stories - alias, timestamp, post, urls, mentions
     [X] feeds - owner alias, timestamp, author alias, post content, more?
-[] Implement DAOs in service layer (get rid of errors)
-[] Pre-compute every user's feed
+[X] Implement DAOs in service layer (get rid of errors)
+[X] Pre-compute every user's feed
 [] Upload profile pictures to S3
 [] Store hashes of user passwords
 [] Expire auth tokens after N minutes of inactivity

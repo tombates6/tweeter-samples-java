@@ -2,11 +2,16 @@ package edu.byu.cs.tweeter.server.dao.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,8 +85,38 @@ public class DynamoDBFeedDAO implements IFeedDAO {
     }
 
     @Override
-    public void updateFeeds(List<User> followers, Status status) {
-        // TODO update feeds based on the user who follows
+    public void updateFeeds(List<User> followers, Status status) throws DataAccessException {
+        List<Item> items = new ArrayList<>();
+        for (User follower : followers) {
+            Item item = new Item()
+                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDate())
+                    .withString(PostAttr, status.getPost())
+                    .withString(AuthorAliasAttr, status.getUser().getAlias())
+                    .withString(AuthorFirstNameAttr, status.getUser().getFirstName())
+                    .withString(AuthorLastNameAttr, status.getUser().getLastName())
+                    .withString(AuthorImageURLAttr, status.getUser().getImageUrl());
+            items.add(item);
+        }
+
+        try {
+            TableWriteItems feedWriteItems = new TableWriteItems(TableName)
+                    .withItemsToPut(items);
+            BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(feedWriteItems);
+            do {
+
+                // Check for unprocessed keys which could happen if you exceed
+                // provisioned throughput
+
+                Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
+
+                if (outcome.getUnprocessedItems().size() > 0) {
+                    outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
+                }
+
+            } while (outcome.getUnprocessedItems().size() > 0);
+        } catch (AmazonDynamoDBException e) {
+            throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
+        }
     }
 
     private Status createStatus(Map<String, AttributeValue> item) {

@@ -9,5 +9,5 @@ import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public interface IFeedDAO {
     ResultsPage<Status> getFeed(String userAlias, int limit, Status lastStatus) throws DataAccessException;
-    void updateFeeds(List<User> followers, Status status);
+    void updateFeeds(List<User> followers, Status status) throws DataAccessException;
 }
