@@ -4,7 +4,6 @@ import android.os.Handler;
 
 import java.io.IOException;
 
-import edu.byu.cs.tweeter.client.model.net.TweeterRequestException;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;

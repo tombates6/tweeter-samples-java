@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.model.net.response;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-
 public class IsFollowerResponse extends Response {
     boolean isFollower;
 

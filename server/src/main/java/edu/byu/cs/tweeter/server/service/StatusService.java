@@ -11,7 +11,6 @@ import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.IFeedDAO;
 import edu.byu.cs.tweeter.server.dao.IStoryDAO;
-import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFeedDAO;
 
 public class StatusService {
     private final IAuthDAO authDAO;

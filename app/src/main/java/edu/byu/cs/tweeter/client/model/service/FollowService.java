@@ -18,8 +18,8 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.PagedUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.BackgroundTaskHandler;
 import edu.byu.cs.tweeter.client.model.service.observer.IEmptySuccessObserver;
-import edu.byu.cs.tweeter.client.model.service.observer.ISingleParamSuccessObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.IPagedTaskObserver;
+import edu.byu.cs.tweeter.client.model.service.observer.ISingleParamSuccessObserver;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 

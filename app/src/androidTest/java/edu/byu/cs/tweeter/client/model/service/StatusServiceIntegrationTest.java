@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

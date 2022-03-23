@@ -8,9 +8,7 @@ import com.google.inject.Injector;
 
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
-import edu.byu.cs.tweeter.server.dao.dynamodb.injection.FollowServiceModule;
 import edu.byu.cs.tweeter.server.dao.dynamodb.injection.StatusServiceModule;
-import edu.byu.cs.tweeter.server.service.FollowService;
 import edu.byu.cs.tweeter.server.service.StatusService;
 
 /**

@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 

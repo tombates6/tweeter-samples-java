@@ -1,9 +1,12 @@
 package edu.byu.cs.tweeter.client;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 /**
  * This class exists purely to prove that tests in your androidTest/java folder have the correct dependencies.
