@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -70,9 +71,9 @@ public class DynamoDBStoryDAO implements IStoryDAO {
                 }
             }
 
-            Map<String, AttributeValue> lastItem = queryResult.getLastEvaluatedKey();
-            if (lastItem != null) {
-                result.setLastItem(createStatus(lastItem));
+            Map<String, AttributeValue> keyMap = queryResult.getLastEvaluatedKey();
+            if (keyMap != null) {
+                result.setLastItem(new PrimaryKey(keyMap.get(AliasAttr).getS(), keyMap.get(TimestampAttr).getB().getLong()));
             }
 
             return result;

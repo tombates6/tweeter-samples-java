@@ -44,7 +44,7 @@ public class test {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new FollowServiceModule());
         FollowService service = injector.getInstance(FollowService.class);
-        FollowersResponse r = service.getFollowers(new FollowersRequest(new AuthToken("7a0d3177-174e-4e5a-b3a0-5d337b26b657",1648089456067L), "@TomBates", 10, null));
+        FollowersResponse r = service.getFollowers(new FollowersRequest(new AuthToken("a43ca26c-d1e4-438e-b672-7bc7486d3201",1648138758130L), "@TomBates", 10, null));
         int x = 1;
     }
 }

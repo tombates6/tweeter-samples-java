@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.server.dao;
 
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +13,10 @@ public class ResultsPage<T> {
 	private List<T> values;
 
 	/**
-	 * The last value returned in this page of results
+	 * The last primary key returned in this page of results
 	 * This value is typically included in the query for the next page of results
 	 */
-	private T lastItem;
+	private PrimaryKey lastItem;
 
 	public ResultsPage() {
 		values = new ArrayList<>();
@@ -37,11 +39,11 @@ public class ResultsPage<T> {
 
 	// LastItem property
 
-	public void setLastItem(T value) {
+	public void setLastItem(PrimaryKey value) {
 		lastItem = value;
 	}
 
-	public T getLastItem() {
+	public PrimaryKey getLastItem() {
 		return lastItem;
 	}
 

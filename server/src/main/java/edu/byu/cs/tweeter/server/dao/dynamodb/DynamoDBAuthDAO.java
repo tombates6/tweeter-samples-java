@@ -100,7 +100,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
             Map<String, String> attrNames = new HashMap<>();
             attrNames.put("#ts", TimestampAttr);
             Map<String, Object> attrValues = new HashMap<>();
-            attrValues.put(":val", authToken.getTimestamp());
+            attrValues.put(":val", Instant.now().toEpochMilli());
             table.updateItem(TokenAttr, authToken.getToken(), "set #ts = :val", attrNames, attrValues);
 
         } catch (AmazonDynamoDBException e) {

@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
@@ -13,6 +14,7 @@ import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
+import java.sql.Time;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,9 +77,9 @@ public class DynamoDBFeedDAO implements IFeedDAO {
                 }
             }
 
-            Map<String, AttributeValue> lastItem = queryResult.getLastEvaluatedKey();
-            if (lastItem != null) {
-                result.setLastItem(createStatus(lastItem));
+            Map<String, AttributeValue> keyMap = queryResult.getLastEvaluatedKey();
+            if (keyMap != null) {
+                result.setLastItem(new PrimaryKey(keyMap.get(OwnerAliasAttr).getS(), keyMap.get(TimestampAttr).getB().getLong()));
             }
 
             return result;

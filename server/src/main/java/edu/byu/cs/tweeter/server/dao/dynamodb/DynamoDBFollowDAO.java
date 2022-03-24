@@ -33,11 +33,11 @@ public class DynamoDBFollowDAO implements IFollowDAO {
     private static final String FollowerHandleAttr = "follower_handle";
     private static final String FollowerFirstNameAttr = "followee_first_name";
     private static final String FollowerLastNameAttr = "followee_last_name";
-    private static final String FollowerImageURLAttr = "followee_last_name";
+    private static final String FollowerImageURLAttr = "follower_image_url";
     private static final String FolloweeHandleAttr = "followee_handle";
     private static final String FolloweeFirstNameAttr = "followee_first_name";
     private static final String FolloweeLastNameAttr = "followee_last_name";
-    private static final String FolloweeImageURLAttr = "followee_last_name";
+    private static final String FolloweeImageURLAttr = "followee_image_url";
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -147,16 +147,16 @@ public class DynamoDBFollowDAO implements IFollowDAO {
         HashMap<String, Object> valueMap = new HashMap<>();
         boolean sortAscending = true;
         String hashKey = FollowerHandleAttr;
-        String firstName = FollowerFirstNameAttr;
-        String lastName = FollowerLastNameAttr;
-        String imageURL = FollowerImageURLAttr;
+        String firstName = FolloweeFirstNameAttr;
+        String lastName = FolloweeLastNameAttr;
+        String imageURL = FolloweeImageURLAttr;
         String sortKey = FolloweeHandleAttr;
 
         if (!getFollowees) {
             hashKey = FolloweeHandleAttr;
-            firstName = FolloweeFirstNameAttr;
-            lastName = FolloweeLastNameAttr;
-            imageURL = FolloweeImageURLAttr;
+            firstName = FollowerFirstNameAttr;
+            lastName = FollowerLastNameAttr;
+            imageURL = FollowerImageURLAttr;
             sortKey = FollowerHandleAttr;
             sortAscending = false;
         }
@@ -193,9 +193,9 @@ public class DynamoDBFollowDAO implements IFollowDAO {
             while (iterator.hasNext()) {
                 item = iterator.next();
                 results.addValue(new User(
-                        item.getString(hashKey),
                         item.getString(firstName),
                         item.getString(lastName),
+                        item.getString(sortKey),
                         item.getString(imageURL)
                 ));
             }
@@ -205,11 +205,9 @@ public class DynamoDBFollowDAO implements IFollowDAO {
                     .getQueryResult()
                     .getLastEvaluatedKey();
             if (keyMap != null) {
-                results.setLastItem(new User(
+                results.setLastItem(new PrimaryKey(
                         keyMap.get(hashKey).getS(),
-                        keyMap.get(firstName).getS(),
-                        keyMap.get(lastName).getS(),
-                        keyMap.get(imageURL).getS()
+                        keyMap.get(sortKey).getS()
                 ));
             }
             return results;
