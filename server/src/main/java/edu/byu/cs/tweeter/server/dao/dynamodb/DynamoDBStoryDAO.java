@@ -51,16 +51,22 @@ public class DynamoDBStoryDAO implements IStoryDAO {
         attrValues.put(":userAlias", new AttributeValue().withS(userAlias));
 
         Map<String, AttributeValue> startKey = new HashMap<>();
-        startKey.put(AliasAttr, new AttributeValue().withS(userAlias));
-        startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
+
+        if (lastStatus != null) {
+            startKey.put(AliasAttr, new AttributeValue().withS(userAlias));
+            startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
+        }
 
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName(TableName)
                 .withKeyConditionExpression("#alias = :userAlias")
                 .withExpressionAttributeNames(attrNames)
                 .withExpressionAttributeValues(attrValues)
-                .withLimit(limit)
-                .withExclusiveStartKey(startKey);
+                .withLimit(limit);
+
+        if (lastStatus != null) {
+            queryRequest = queryRequest.withExclusiveStartKey(startKey);
+        }
 
         try {
             QueryResult queryResult = amazonDynamoDB.query(queryRequest);
@@ -72,9 +78,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
             }
 
             Map<String, AttributeValue> keyMap = queryResult.getLastEvaluatedKey();
-            if (keyMap != null) {
-                result.setLastItem(new PrimaryKey(keyMap.get(AliasAttr).getS(), keyMap.get(TimestampAttr).getB().getLong()));
-            }
+            result.setHasLastItem(keyMap != null);
 
             return result;
         } catch (AmazonDynamoDBException e) {
@@ -101,7 +105,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
     private Status createStatus(Map<String, AttributeValue> item) {
         String post = item.get(PostAttr).getS();
-        long timestamp = item.get(TimestampAttr).getB().getLong();
+        long timestamp = Long.parseLong(item.get(TimestampAttr).getN(), 10);
         Date date = Date.from(Instant.ofEpochMilli(timestamp));
         List<String> mentions = parseMentions(post);
         List<String> urls = parseURLs(post);

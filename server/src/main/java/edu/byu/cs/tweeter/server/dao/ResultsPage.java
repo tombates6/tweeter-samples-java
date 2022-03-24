@@ -16,11 +16,11 @@ public class ResultsPage<T> {
 	 * The last primary key returned in this page of results
 	 * This value is typically included in the query for the next page of results
 	 */
-	private PrimaryKey lastItem;
+	private boolean hasLastItem;
 
 	public ResultsPage() {
 		values = new ArrayList<>();
-		lastItem = null;
+		hasLastItem = false;
 	}
 
 	// Values property
@@ -37,17 +37,11 @@ public class ResultsPage<T> {
 		return values;
 	}
 
-	// LastItem property
-
-	public void setLastItem(PrimaryKey value) {
-		lastItem = value;
-	}
-
-	public PrimaryKey getLastItem() {
-		return lastItem;
+	public void setHasLastItem(boolean v) {
+		hasLastItem = v;
 	}
 
 	public boolean hasLastItem() {
-		return (lastItem != null);
+		return hasLastItem;
 	}
 }

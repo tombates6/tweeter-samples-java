@@ -204,12 +204,7 @@ public class DynamoDBFollowDAO implements IFollowDAO {
                     .getLastLowLevelResult()
                     .getQueryResult()
                     .getLastEvaluatedKey();
-            if (keyMap != null) {
-                results.setLastItem(new PrimaryKey(
-                        keyMap.get(hashKey).getS(),
-                        keyMap.get(sortKey).getS()
-                ));
-            }
+            results.setHasLastItem(keyMap != null);
             return results;
 
         } catch (AmazonDynamoDBException e) {
