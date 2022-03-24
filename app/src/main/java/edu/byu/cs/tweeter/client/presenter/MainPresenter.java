@@ -57,7 +57,7 @@ public class MainPresenter extends Presenter<MainView>{
     }
 
     public Status createStatus(String post) {
-        return new Status(post, Cache.getInstance().getCurrUser(), Date.from(Instant.now()), parseURLs(post), parseMentions(post));
+        return new Status(post, Cache.getInstance().getCurrUser(), Instant.now().toEpochMilli(), parseURLs(post), parseMentions(post));
     }
 
     public void logout() {

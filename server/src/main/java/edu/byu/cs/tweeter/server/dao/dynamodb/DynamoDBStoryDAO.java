@@ -4,7 +4,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -54,7 +53,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
         if (lastStatus != null) {
             startKey.put(AliasAttr, new AttributeValue().withS(userAlias));
-            startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
+            startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDatetime())));
         }
 
         QueryRequest queryRequest = new QueryRequest()
@@ -92,7 +91,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
         try {
             Item item = new Item()
-                    .withPrimaryKey(AliasAttr, status.getUser().getAlias(), TimestampAttr, status.getDate().getTime())
+                    .withPrimaryKey(AliasAttr, status.getUser().getAlias(), TimestampAttr, status.getDatetime())
                     .withString(PostAttr, status.getPost())
                     .withString(FirstNameAttr, status.getUser().getFirstName())
                     .withString(LastNameAttr, status.getUser().getLastName())
@@ -106,7 +105,6 @@ public class DynamoDBStoryDAO implements IStoryDAO {
     private Status createStatus(Map<String, AttributeValue> item) {
         String post = item.get(PostAttr).getS();
         long timestamp = Long.parseLong(item.get(TimestampAttr).getN(), 10);
-        Date date = Date.from(Instant.ofEpochMilli(timestamp));
         List<String> mentions = parseMentions(post);
         List<String> urls = parseURLs(post);
 
@@ -116,7 +114,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
         String imageURL = item.get(ImageURLAttr).getS();
         User author = new User(firstName, lastName, alias, imageURL);
 
-        return new Status(post, author, date, urls, mentions);
+        return new Status(post, author, timestamp, urls, mentions);
     }
 
     // TODO make the following three functions shared. They need to be used in the client and the server.

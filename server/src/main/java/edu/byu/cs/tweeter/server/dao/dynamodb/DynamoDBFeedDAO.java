@@ -5,8 +5,6 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -14,7 +12,6 @@ import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
-import java.sql.Time;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.server.dao.IFeedDAO;
@@ -60,7 +56,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
 
         if (lastStatus != null) {
             startKey.put(OwnerAliasAttr, new AttributeValue().withS(userAlias));
-            startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
+            startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDatetime())));
         }
 
         QueryRequest queryRequest = new QueryRequest()
@@ -96,7 +92,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         List<Item> items = new ArrayList<>();
         for (User follower : followers) {
             Item item = new Item()
-                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDate().getTime())
+                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDatetime())
                     .withString(PostAttr, status.getPost())
                     .withString(AuthorAliasAttr, status.getUser().getAlias())
                     .withString(AuthorFirstNameAttr, status.getUser().getFirstName())
@@ -129,7 +125,6 @@ public class DynamoDBFeedDAO implements IFeedDAO {
     private Status createStatus(Map<String, AttributeValue> item) {
         String post = item.get(PostAttr).getS();
         long timestamp = Long.parseLong(item.get(TimestampAttr).getN(), 10);
-        Date date = Date.from(Instant.ofEpochMilli(timestamp));
         List<String> mentions = parseMentions(post);
         List<String> urls = parseURLs(post);
 
@@ -139,7 +134,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         String authorImageURL = item.get(AuthorImageURLAttr).getS();
         User author = new User(authorFirstName, authorLastName, authorAlias, authorImageURL);
 
-        return new Status(post, author, date, urls, mentions);
+        return new Status(post, author, timestamp, urls, mentions);
     }
 
     // TODO make the following three functions shared. They need to be used in the client and the server.

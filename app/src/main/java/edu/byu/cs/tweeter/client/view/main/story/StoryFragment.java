@@ -158,7 +158,7 @@ public class StoryFragment extends Fragment implements UserView, PageView<Status
             Picasso.get().load(status.getUser().getImageUrl()).into(userImage);
             userAlias.setText(status.getUser().getAlias());
             userName.setText(status.getUser().getName());
-            datetime.setText(status.getDate().toString());
+            datetime.setText(Date.from(Instant.ofEpochMilli(status.getDatetime())).toString());
 
             // @mentions and urls clickable
             SpannableString spannableString = new SpannableString(status.getPost());

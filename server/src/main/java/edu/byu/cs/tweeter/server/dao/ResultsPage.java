@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.server.dao;
 
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-
 import java.util.ArrayList;
 import java.util.List;
 

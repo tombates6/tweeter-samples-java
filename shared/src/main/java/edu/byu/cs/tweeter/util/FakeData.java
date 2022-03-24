@@ -112,7 +112,7 @@ public class FakeData {
                         "\nMy friend " + mention.getAlias() + " likes this website" +
                         "\n" + url;
                 calendar.add(Calendar.MINUTE, 1);
-                Date datetime = calendar.getTime();
+                long datetime = calendar.getTime().getTime();
                 Status status = new Status(post, sender, datetime, urls, mentions);
                 allStatuses.add(status);
             }
@@ -199,7 +199,7 @@ public class FakeData {
             for (int i = 0; i < fakeStatuses.size(); ++i) {
                 Status curStatus = fakeStatuses.get(i);
                 if (curStatus.getUser().getAlias().equals(lastStatus.getUser().getAlias()) &&
-                        curStatus.getDate().equals(lastStatus.getDate())) {
+                        curStatus.getDatetime() == lastStatus.getDatetime()) {
                     index = i + 1;
                     break;
                 }
