@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Base64;
 
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
@@ -24,8 +25,9 @@ public class S3ImageDAO implements IImageDAO {
     @Override
     public String uploadImage(String alias, String image) throws DataAccessException {
         try {
-            String filename = alias + "-image.jpeg";
-            InputStream fis = new ByteArrayInputStream(image.getBytes());
+            String filename = alias.substring(1) + "-image.jpeg";
+            byte[] imageBytes = Base64.getDecoder().decode(image);
+            InputStream fis = new ByteArrayInputStream(imageBytes);
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(image.getBytes().length);

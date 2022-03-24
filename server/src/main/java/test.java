@@ -56,13 +56,13 @@ public class test {
 //        FollowService service = injector.getInstance(FollowService.class);
 //        FollowingCountResponse r = service.getFollowingCount(new FollowingCountRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L), "@TomBates"));
 
-//        Injector injector = Guice.createInjector(new FollowServiceModule());
-//        FollowService service = injector.getInstance(FollowService.class);
-//        FollowersResponse r = service.getFollowers(new FollowersRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L), "@TomBates", 10, null));
+        Injector injector = Guice.createInjector(new FollowServiceModule());
+        FollowService service = injector.getInstance(FollowService.class);
+        FollowersResponse r = service.getFollowers(new FollowersRequest(new AuthToken("ae7ae897-708d-403e-af7d-be38782f6420",1648156783799L), "@TomBates", 10, "@user13"));
 
 //        Injector injector = Guice.createInjector(new FollowServiceModule());
 //        FollowService service = injector.getInstance(FollowService.class);
-//        FollowingResponse r = service.getFollowing(new FollowingRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L), "@TomBates", 10, null));
+        FollowingResponse fr = service.getFollowing(new FollowingRequest(new AuthToken("ae7ae897-708d-403e-af7d-be38782f6420",1648156783799L), "@TomBates", 10, "@user4"));
 
 //        Injector injector = Guice.createInjector(new FollowServiceModule());
 //        FollowService service = injector.getInstance(FollowService.class);
@@ -76,16 +76,16 @@ public class test {
 //        StatusService service = injector.getInstance(StatusService.class);
 //        StoryResponse r = service.getStory(new StoryRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L), "@TomBates", 10, null));
 
-        Injector injector = Guice.createInjector(new StatusServiceModule());
-        StatusService service = injector.getInstance(StatusService.class);
-        PostStatusResponse r = service.post(new PostStatusRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L),
-                new Status(
-                        "a dummy post",
-                        new User("Tom", "Bates", "@TomBates", "https://tbates6-tweeter-images.s3.us-west-2.amazonaws.com/%40TomBates-image.jpeg"),
-                        1648148250026L,
-                        null,
-                        null
-                )));
+//        Injector injector = Guice.createInjector(new StatusServiceModule());
+//        StatusService service = injector.getInstance(StatusService.class);
+//        PostStatusResponse r = service.post(new PostStatusRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L),
+//                new Status(
+//                        "a dummy post",
+//                        new User("Tom", "Bates", "@TomBates", "https://tbates6-tweeter-images.s3.us-west-2.amazonaws.com/%40TomBates-image.jpeg"),
+//                        1648148250026L,
+//                        null,
+//                        null
+//                )));
 //
 //        Injector injector = Guice.createInjector(new StatusServiceModule());
 //        StatusService service = injector.getInstance(StatusService.class);
