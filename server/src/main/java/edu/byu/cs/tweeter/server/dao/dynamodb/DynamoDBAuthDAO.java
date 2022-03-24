@@ -22,7 +22,7 @@ public class DynamoDBAuthDAO implements IAuthDAO {
     private static final String TokenAttr = "token";
     private static final String TimestampAttr = "timestamp";
     private static final String AliasAttr = "alias";
-    private static final int MIN_ACTIVE_MINUTES = 1;
+    private static final int MIN_ACTIVE_MINUTES = 120;
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -121,6 +121,6 @@ public class DynamoDBAuthDAO implements IAuthDAO {
 
     private boolean isExpired(long oldTimestamp) {
         long now = Instant.now().toEpochMilli();
-        return TimeUnit.MILLISECONDS.toSeconds(now - oldTimestamp) > MIN_ACTIVE_MINUTES;
+        return TimeUnit.MILLISECONDS.toMinutes(now - oldTimestamp) > MIN_ACTIVE_MINUTES;
     }
 }
