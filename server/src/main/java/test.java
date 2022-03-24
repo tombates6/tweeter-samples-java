@@ -44,9 +44,9 @@ public class test {
 //        UserService service = injector.getInstance(UserService.class);
 //        UserResponse r = service.getUserProfile(new UserRequest("@TomBates", new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L)));
 
-//        Injector injector = Guice.createInjector(new UserServiceModule());
-//        UserService service = injector.getInstance(UserService.class);
-//        LoginResponse r = service.login(new LoginRequest("@TomBates", "tom"));
+        Injector injector = Guice.createInjector(new UserServiceModule());
+        UserService service = injector.getInstance(UserService.class);
+        LoginResponse r = service.login(new LoginRequest("@testy", "test"));
 
 //        Injector injector = Guice.createInjector(new FollowServiceModule());
 //        FollowService service = injector.getInstance(FollowService.class);
@@ -93,7 +93,8 @@ public class test {
 
 //        Injector injector = Guice.createInjector(new UserServiceModule());
 //        UserService service = injector.getInstance(UserService.class);
-//        RegisterResponse r = service.register(new RegisterRequest());
+//        RegisterResponse r = service.register(new RegisterRequest("Test", "Tester", "@testy", "test", "asdfkjelcnekl/+"));
+
         int x = 1;
     }
 }

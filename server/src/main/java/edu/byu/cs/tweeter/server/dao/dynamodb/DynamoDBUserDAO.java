@@ -7,6 +7,9 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
 import edu.byu.cs.tweeter.server.dao.IUserDAO;
@@ -50,7 +53,7 @@ public class DynamoDBUserDAO implements IUserDAO {
         Table table = dynamoDB.getTable(TableName);
         try {
             Item item = table.getItem(AliasAttr, alias);
-            if (item == null || !item.getString(PasswordAttr).equals(password)) {
+            if (item == null || !item.getString(PasswordAttr).equals(hashPassword(password))) {
                 throw new RuntimeException("[BadRequest] Incorrect Username or Password");
             }
         } catch (AmazonDynamoDBException e) {
@@ -64,7 +67,7 @@ public class DynamoDBUserDAO implements IUserDAO {
         try {
             Item item = new Item()
                     .withPrimaryKey(AliasAttr, newUser.getAlias())
-                    .withString(PasswordAttr, password)
+                    .withString(PasswordAttr, hashPassword(password))
                     .withString(FirstNameAttr, newUser.getFirstName())
                     .withString(LastNameAttr, newUser.getLastName())
                     .withString(ImageURLAttr, newUser.getImageUrl());
@@ -72,5 +75,21 @@ public class DynamoDBUserDAO implements IUserDAO {
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }
+    }
+
+    private String hashPassword(String passwordToHash) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(passwordToHash.getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "FAILED TO HASH";
     }
 }
