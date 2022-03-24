@@ -30,7 +30,7 @@ public class S3ImageDAO implements IImageDAO {
             InputStream fis = new ByteArrayInputStream(imageBytes);
 
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(image.getBytes().length);
+            metadata.setContentLength(imageBytes.length);
             metadata.setContentType("image/jpeg");
             amazonS3.putObject(new PutObjectRequest(bucketName, filename, fis, metadata).withCannedAcl(CannedAccessControlList.PublicRead));
 

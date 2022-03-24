@@ -120,9 +120,9 @@ public class MainPresenter extends Presenter<MainView>{
         return containedUrls;
     }
 
-    public void updateSelectedUserFollowingAndFollowers() {
-        followService.getFollowersCount(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), new GetFollowersCountObserver());
-        followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), new GetFollowingCountObserver());
+    public void updateSelectedUserFollowingAndFollowers(User selectedUser) {
+        followService.getFollowersCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new GetFollowersCountObserver());
+        followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new GetFollowingCountObserver());
     }
 
 
@@ -220,7 +220,6 @@ public class MainPresenter extends Presenter<MainView>{
 
         @Override
         public void success() {
-            updateSelectedUserFollowingAndFollowers();
             view.setFollowing(false);
         }
     }
@@ -230,7 +229,6 @@ public class MainPresenter extends Presenter<MainView>{
 
         @Override
         public void success() {
-            updateSelectedUserFollowingAndFollowers();
             view.setFollowing(true);
         }
     }

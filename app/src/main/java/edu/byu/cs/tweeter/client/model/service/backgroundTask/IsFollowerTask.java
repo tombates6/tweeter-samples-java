@@ -40,7 +40,7 @@ public class IsFollowerTask extends AuthenticatedTask {
     protected void runTask() throws IOException {
         try {
             IsFollowerResponse res = getServer().isFollower(new IsFollowerRequest(getAuthToken(), follower.getAlias(), followee.getAlias()));
-            isFollower = res.isFollower();
+            isFollower = res.getFollower();
             sendSuccessMessage();
         } catch (TweeterRemoteException e) {
             sendFailedMessage(e.getMessage());

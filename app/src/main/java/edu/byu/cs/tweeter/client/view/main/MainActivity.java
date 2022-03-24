@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
             statusDialogFragment.show(getSupportFragmentManager(), "post-status-dialog");
         });
 
-        mainPresenter.updateSelectedUserFollowingAndFollowers();
+        mainPresenter.updateSelectedUserFollowingAndFollowers(selectedUser);
 
         TextView userName = findViewById(R.id.userName);
         userName.setText(selectedUser.getName());
@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
 
     @Override
     public void setFollowing(boolean following) {
+        mainPresenter.updateSelectedUserFollowingAndFollowers(selectedUser);
         updateFollowButton(following);
         followButton.setEnabled(true);
     }
