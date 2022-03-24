@@ -10,7 +10,9 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +51,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
         Map<String, AttributeValue> startKey = new HashMap<>();
         startKey.put(AliasAttr, new AttributeValue().withS(userAlias));
-        startKey.put(TimestampAttr, new AttributeValue().withS(lastStatus.getDate()));
+        startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
 
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName(TableName)
@@ -85,7 +87,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
         try {
             Item item = new Item()
-                    .withPrimaryKey(AliasAttr, status.getUser().getAlias(), TimestampAttr, status.getDate())
+                    .withPrimaryKey(AliasAttr, status.getUser().getAlias(), TimestampAttr, status.getDate().getTime())
                     .withString(PostAttr, status.getPost())
                     .withString(FirstNameAttr, status.getUser().getFirstName())
                     .withString(LastNameAttr, status.getUser().getLastName())
@@ -98,7 +100,8 @@ public class DynamoDBStoryDAO implements IStoryDAO {
 
     private Status createStatus(Map<String, AttributeValue> item) {
         String post = item.get(PostAttr).getS();
-        String timestamp = item.get(TimestampAttr).getS();
+        long timestamp = item.get(TimestampAttr).getB().getLong();
+        Date date = Date.from(Instant.ofEpochMilli(timestamp));
         List<String> mentions = parseMentions(post);
         List<String> urls = parseURLs(post);
 
@@ -108,7 +111,7 @@ public class DynamoDBStoryDAO implements IStoryDAO {
         String imageURL = item.get(ImageURLAttr).getS();
         User author = new User(firstName, lastName, alias, imageURL);
 
-        return new Status(post, author, timestamp, urls, mentions);
+        return new Status(post, author, date, urls, mentions);
     }
 
     // TODO make the following three functions shared. They need to be used in the client and the server.

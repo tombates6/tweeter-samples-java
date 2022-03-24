@@ -13,7 +13,9 @@ import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
 
         Map<String, AttributeValue> startKey = new HashMap<>();
         startKey.put(OwnerAliasAttr, new AttributeValue().withS(userAlias));
-        startKey.put(TimestampAttr, new AttributeValue().withS(lastStatus.getDate()));
+        startKey.put(TimestampAttr, new AttributeValue().withN(String.valueOf(lastStatus.getDate().getTime())));
 
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName(TableName)
@@ -89,7 +91,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         List<Item> items = new ArrayList<>();
         for (User follower : followers) {
             Item item = new Item()
-                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDate())
+                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDate().getTime())
                     .withString(PostAttr, status.getPost())
                     .withString(AuthorAliasAttr, status.getUser().getAlias())
                     .withString(AuthorFirstNameAttr, status.getUser().getFirstName())
@@ -121,7 +123,8 @@ public class DynamoDBFeedDAO implements IFeedDAO {
 
     private Status createStatus(Map<String, AttributeValue> item) {
         String post = item.get(PostAttr).getS();
-        String timestamp = item.get(TimestampAttr).getS();
+        long timestamp = item.get(TimestampAttr).getB().getLong();
+        Date date = Date.from(Instant.ofEpochMilli(timestamp));
         List<String> mentions = parseMentions(post);
         List<String> urls = parseURLs(post);
 
@@ -131,7 +134,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         String authorImageURL = item.get(AuthorImageURLAttr).getS();
         User author = new User(authorFirstName, authorLastName, authorAlias, authorImageURL);
 
-        return new Status(post, author, timestamp, urls, mentions);
+        return new Status(post, author, date, urls, mentions);
     }
 
     // TODO make the following three functions shared. They need to be used in the client and the server.
