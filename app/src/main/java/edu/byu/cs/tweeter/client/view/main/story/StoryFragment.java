@@ -27,6 +27,8 @@ import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -322,7 +324,7 @@ public class StoryFragment extends Fragment implements UserView, PageView<Status
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() {
-            addItem(new Status("Dummy Post", new User("firstName", "lastName", "@coolAlias"), "2020-10-31 00:00:00", new ArrayList<String>() {{
+            addItem(new Status("Dummy Post", new User("firstName", "lastName", "@coolAlias"), Date.from(Instant.now()), new ArrayList<String>() {{
                 add("https://youtube.com");
             }}, new ArrayList<String>() {{
                 add("@Dude1");

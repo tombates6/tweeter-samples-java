@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -111,7 +112,7 @@ public class FakeData {
                         "\nMy friend " + mention.getAlias() + " likes this website" +
                         "\n" + url;
                 calendar.add(Calendar.MINUTE, 1);
-                String datetime = calendar.getTime().toString();
+                Date datetime = calendar.getTime();
                 Status status = new Status(post, sender, datetime, urls, mentions);
                 allStatuses.add(status);
             }

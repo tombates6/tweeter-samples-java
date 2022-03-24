@@ -2,9 +2,11 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
@@ -40,7 +42,7 @@ public class MainPresenter extends Presenter<MainView>{
         followService.unfollow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new UnfollowObserver());
     }
 
-    public void postStatus(String post) throws ParseException {
+    public void postStatus(String post) {
         Status newStatus = createStatus(post);
         PostStatusObserver observer = createStatusObserver();
         getStatusService().postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, observer);
@@ -54,8 +56,8 @@ public class MainPresenter extends Presenter<MainView>{
         return new PostStatusObserver();
     }
 
-    public Status createStatus(String post) throws ParseException {
-        return new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
+    public Status createStatus(String post) {
+        return new Status(post, Cache.getInstance().getCurrUser(), Date.from(Instant.now()), parseURLs(post), parseMentions(post));
     }
 
     public void logout() {
@@ -122,13 +124,6 @@ public class MainPresenter extends Presenter<MainView>{
     public void updateSelectedUserFollowingAndFollowers() {
         followService.getFollowersCount(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), new GetFollowersCountObserver());
         followService.getFollowingCount(Cache.getInstance().getCurrUserAuthToken(), Cache.getInstance().getCurrUser(), new GetFollowingCountObserver());
-    }
-
-    public String getFormattedDateTime() throws ParseException {
-        SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        SimpleDateFormat statusFormat = new SimpleDateFormat("MMM d yyyy h:mm aaa");
-
-        return statusFormat.format(userFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString().substring(0, 8)));
     }
 
 

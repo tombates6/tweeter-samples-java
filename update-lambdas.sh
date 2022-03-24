@@ -1,0 +1,14 @@
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-LoginHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-RegisterHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-LogoutHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetUserHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetFeedHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetStoryHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-PostStatusHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetFollowingCountHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetFollowingHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetFollowersCountHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetFollowersHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-FollowHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-UnfollowHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-IsFollowerHandler > ./log.txt
