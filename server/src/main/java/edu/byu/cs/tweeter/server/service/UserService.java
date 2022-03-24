@@ -71,9 +71,9 @@ public class UserService {
         try {
             String imageURL = imageDAO.uploadImage(req.getUsername(), req.getImage());
             User newUser = new User(
-                    req.getUsername(),
                     req.getFirstName(),
                     req.getLastName(),
+                    req.getUsername(),
                     imageURL
             );
             userDAO.addUser(newUser, req.getPassword());
