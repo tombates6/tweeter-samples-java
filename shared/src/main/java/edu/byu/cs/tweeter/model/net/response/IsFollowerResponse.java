@@ -16,7 +16,7 @@ public class IsFollowerResponse extends Response {
         return isFollower;
     }
 
-    public void setFollower(boolean follower) {
+    public void setIsFollower(boolean follower) {
         isFollower = follower;
     }
 }

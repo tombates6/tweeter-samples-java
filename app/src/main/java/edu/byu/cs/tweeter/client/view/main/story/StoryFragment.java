@@ -324,7 +324,7 @@ public class StoryFragment extends Fragment implements UserView, PageView<Status
          * loading footer view) at the bottom of the list.
          */
         private void addLoadingFooter() {
-            addItem(new Status("Dummy Post", new User("firstName", "lastName", "@coolAlias"), Date.from(Instant.now()), new ArrayList<String>() {{
+            addItem(new Status("Dummy Post", new User("firstName", "lastName", "@coolAlias"), Instant.now().toEpochMilli(), new ArrayList<String>() {{
                 add("https://youtube.com");
             }}, new ArrayList<String>() {{
                 add("@Dude1");

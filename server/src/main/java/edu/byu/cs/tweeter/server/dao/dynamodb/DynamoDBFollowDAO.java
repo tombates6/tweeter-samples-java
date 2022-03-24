@@ -31,8 +31,8 @@ public class DynamoDBFollowDAO implements IFollowDAO {
     private static final String TableName = "follows";
     private static final String IndexName = "follows_index";
     private static final String FollowerHandleAttr = "follower_handle";
-    private static final String FollowerFirstNameAttr = "followee_first_name";
-    private static final String FollowerLastNameAttr = "followee_last_name";
+    private static final String FollowerFirstNameAttr = "follower_first_name";
+    private static final String FollowerLastNameAttr = "follower_last_name";
     private static final String FollowerImageURLAttr = "follower_image_url";
     private static final String FolloweeHandleAttr = "followee_handle";
     private static final String FolloweeFirstNameAttr = "followee_first_name";

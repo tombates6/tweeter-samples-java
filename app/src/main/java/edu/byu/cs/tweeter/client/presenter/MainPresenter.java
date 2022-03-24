@@ -34,7 +34,6 @@ public class MainPresenter extends Presenter<MainView>{
     }
 
     public void follow(User selectedUser) {
-        // TODO edit Follow so we know relationship
         followService.follow(Cache.getInstance().getCurrUserAuthToken(), selectedUser, new FollowObserver());
     }
 
