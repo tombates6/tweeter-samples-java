@@ -13,7 +13,6 @@ import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -112,13 +111,19 @@ public class DynamoDBFollowDAO implements IFollowDAO {
 
     /**
      * Follows the user that the user specified in the request.
+     * @param follower
+     * @param followee
      */
-    public void follow(String followerAlias, String followeeAlias) throws DataAccessException {
+    public void follow(User follower, User followee) throws DataAccessException {
         Table table = dynamoDB.getTable(TableName);
 
         try {
             Item item = new Item()
-                    .withPrimaryKey(FollowerHandleAttr, followerAlias, FolloweeHandleAttr, followeeAlias);
+                    .withPrimaryKey(FollowerHandleAttr, follower.getAlias(), FolloweeHandleAttr, followee.getAlias())
+                    .withString(FollowerFirstNameAttr, follower.getFirstName())
+                    .withString(FollowerLastNameAttr, follower.getLastName())
+                    .withString(FolloweeFirstNameAttr, followee.getFirstName())
+                    .withString(FolloweeLastNameAttr, followee.getLastName());
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());

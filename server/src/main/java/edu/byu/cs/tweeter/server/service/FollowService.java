@@ -19,6 +19,7 @@ import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.IFollowDAO;
+import edu.byu.cs.tweeter.server.dao.IUserDAO;
 import edu.byu.cs.tweeter.server.dao.ResultsPage;
 import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFollowDAO;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
@@ -29,10 +30,12 @@ import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 public class FollowService {
     private final IAuthDAO authDAO;
     private final IFollowDAO followDAO;
+    private final IUserDAO userDAO;
 
     @Inject
-    public FollowService(IAuthDAO authDAO, IFollowDAO followDAO) {
+    public FollowService(IAuthDAO authDAO, IFollowDAO followDAO, IUserDAO userDAO) {
         this.authDAO = authDAO;
+        this.userDAO = userDAO;
         this.followDAO = followDAO;
     }
 
@@ -161,8 +164,10 @@ public class FollowService {
      */
     public FollowResponse follow(FollowRequest req) {
         try {
-            String alias = authDAO.getAlias(req.getAuthToken());
-            followDAO.follow(alias, req.getSelectedUser().getAlias());
+            String followerAlias = authDAO.getAlias(req.getAuthToken());
+            User follower = userDAO.getUserProfile(followerAlias);
+            User followee = userDAO.getUserProfile(req.getSelectedUser().getAlias());
+            followDAO.follow(follower, followee);
             return new FollowResponse(true, null);
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());

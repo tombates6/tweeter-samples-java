@@ -13,6 +13,6 @@ public interface IFollowDAO {
     int getFollowersCount(String userAlias) throws DataAccessException;
     ResultsPage<User> getFollowing(String followerAlias, int limit, String lastFolloweeAlias) throws DataAccessException;
     int getFollowingCount(String userAlias) throws DataAccessException;
-    void follow(String followerAlias, String followeeAlias) throws DataAccessException;
+    void follow(User follower, User followee) throws DataAccessException;
     void unfollow(String followerAlias, String followeeAlias) throws DataAccessException;
 }
