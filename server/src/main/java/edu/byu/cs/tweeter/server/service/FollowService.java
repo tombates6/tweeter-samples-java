@@ -1,5 +1,7 @@
 package edu.byu.cs.tweeter.server.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import edu.byu.cs.tweeter.model.domain.User;
@@ -9,6 +11,7 @@ import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
+import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
@@ -16,6 +19,8 @@ import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
+import edu.byu.cs.tweeter.model.net.response.PostFollowersResponse;
+import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.IFollowDAO;
@@ -185,6 +190,20 @@ public class FollowService {
             String alias = authDAO.getAlias(req.getAuthToken());
             followDAO.unfollow(alias, req.getFolloweeAlias());
             return new UnfollowResponse(true, null);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public PostFollowersResponse getAllFollowers(PostStatusRequest req) {
+        try {
+            List<User> followers = followDAO.getAllFollowers(
+                    req
+                            .getStatus()
+                            .getUser()
+                            .getAlias()
+            );
+            return new PostFollowersResponse(followers);
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }

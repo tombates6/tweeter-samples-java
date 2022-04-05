@@ -1,16 +1,13 @@
 package edu.byu.cs.tweeter.server.service;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.StoryRequest;
+import edu.byu.cs.tweeter.model.net.request.UpdateFeedsRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
-import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.server.dao.IAuthDAO;
@@ -86,14 +83,15 @@ public class StatusService {
         try {
             authDAO.validateToken(req.getAuthToken());
             storyDAO.postStatus(req.getStatus());
-            List<User> followers = followDAO.getAllFollowers(
-                    req
-                            .getStatus()
-                            .getUser()
-                            .getAlias()
-            );
-            feedDAO.updateFeeds(followers, req.getStatus());
             return new PostStatusResponse(true, null);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateAllFeeds(UpdateFeedsRequest req) {
+        try {
+            feedDAO.updateFeeds(req.getUsers(), req.getStatus());
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }
