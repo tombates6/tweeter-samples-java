@@ -3,25 +3,24 @@ package edu.byu.cs.tweeter.model.net.request;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
 
 public class UpdateFeedsRequest {
     private Status status;
-    private List<User> users;
+    private List<String> aliases;
 
     private UpdateFeedsRequest(){}
 
-    public UpdateFeedsRequest(Status status, List<User> aliases) {
+    public UpdateFeedsRequest(Status status, List<String> aliases) {
         this.status = status;
-        this.users = aliases;
+        this.aliases = aliases;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<String> getAliases() {
+        return aliases;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
     public Status getStatus() {

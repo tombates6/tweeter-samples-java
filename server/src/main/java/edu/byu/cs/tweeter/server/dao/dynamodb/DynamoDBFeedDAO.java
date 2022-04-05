@@ -34,6 +34,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
     private static final String AuthorFirstNameAttr = "first_name";
     private static final String AuthorLastNameAttr = "last_name";
     private static final String AuthorImageURLAttr = "image_url";
+    private static final int MAX_WRITE_ITEMS = 25;
 
     // DynamoDB client
     private static AmazonDynamoDB amazonDynamoDB = AmazonDynamoDBClientBuilder
@@ -88,11 +89,11 @@ public class DynamoDBFeedDAO implements IFeedDAO {
     }
 
     @Override
-    public void updateFeeds(List<User> followers, Status status) throws DataAccessException {
+    public void updateFeeds(List<String> aliases, Status status) throws DataAccessException {
         List<Item> items = new ArrayList<>();
-        for (User follower : followers) {
+        for (String alias : aliases) {
             Item item = new Item()
-                    .withPrimaryKey(OwnerAliasAttr, follower.getAlias(), TimestampAttr, status.getDatetime())
+                    .withPrimaryKey(OwnerAliasAttr, alias, TimestampAttr, status.getDatetime())
                     .withString(PostAttr, status.getPost())
                     .withString(AuthorAliasAttr, status.getUser().getAlias())
                     .withString(AuthorFirstNameAttr, status.getUser().getFirstName())
@@ -100,23 +101,17 @@ public class DynamoDBFeedDAO implements IFeedDAO {
                     .withString(AuthorImageURLAttr, status.getUser().getImageUrl());
             items.add(item);
         }
-
         try {
-            TableWriteItems feedWriteItems = new TableWriteItems(TableName)
-                    .withItemsToPut(items);
-            BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(feedWriteItems);
-            do {
+            int lastIndex = 0;
+            int nextIndex = MAX_WRITE_ITEMS < items.size() ? MAX_WRITE_ITEMS : items.size() - 1;
+            while (nextIndex <= items.size() - 1) {
+                TableWriteItems feedWriteItems = new TableWriteItems(TableName)
+                        .withItemsToPut(items.subList(lastIndex, nextIndex));
+                dynamoDB.batchWriteItem(feedWriteItems);
 
-                // Check for unprocessed keys which could happen if you exceed
-                // provisioned throughput
-
-                Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
-
-                if (outcome.getUnprocessedItems().size() > 0) {
-                    outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
-                }
-
-            } while (outcome.getUnprocessedItems().size() > 0);
+                lastIndex = nextIndex + 1;
+                nextIndex += MAX_WRITE_ITEMS;
+            }
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
         }

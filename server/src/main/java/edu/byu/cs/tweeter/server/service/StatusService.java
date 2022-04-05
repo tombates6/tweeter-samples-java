@@ -91,7 +91,7 @@ public class StatusService {
 
     public void updateAllFeeds(UpdateFeedsRequest req) {
         try {
-            feedDAO.updateFeeds(req.getUsers(), req.getStatus());
+            feedDAO.updateFeeds(req.getAliases(), req.getStatus());
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }

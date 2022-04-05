@@ -3,27 +3,25 @@ package edu.byu.cs.tweeter.model.net.response;
 import java.util.List;
 import java.util.Objects;
 
-import edu.byu.cs.tweeter.model.domain.User;
-
 public class PostFollowersResponse extends Response {
 
-    private List<User> followers;
+    private List<String> aliases;
 
     public PostFollowersResponse(String message) {
         super(false, message);
     }
 
-    public PostFollowersResponse(List<User> aliases) {
+    public PostFollowersResponse(List<String> aliases) {
         super(true);
-        this.followers = aliases;
+        this.aliases = aliases;
     }
 
-    public List<User> getFollowers() {
-        return followers;
+    public List<String> getAliases() {
+        return aliases;
     }
 
-    public void setFollowers(List<User> followers) {
-        this.followers = followers;
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
     @Override
@@ -38,13 +36,13 @@ public class PostFollowersResponse extends Response {
 
         PostFollowersResponse that = (PostFollowersResponse) param;
 
-        return (Objects.equals(followers, that.followers) &&
+        return (Objects.equals(aliases, that.aliases) &&
                 Objects.equals(this.getMessage(), that.getMessage()) &&
                 this.isSuccess() == that.isSuccess());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(followers);
+        return Objects.hash(aliases);
     }
 }

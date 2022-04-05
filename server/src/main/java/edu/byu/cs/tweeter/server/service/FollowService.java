@@ -197,7 +197,7 @@ public class FollowService {
 
     public PostFollowersResponse getAllFollowers(PostStatusRequest req) {
         try {
-            List<User> followers = followDAO.getAllFollowers(
+            List<String> followers = followDAO.getAllFollowers(
                     req
                             .getStatus()
                             .getUser()

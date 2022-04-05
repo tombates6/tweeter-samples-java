@@ -105,9 +105,13 @@ public class DynamoDBFollowDAO implements IFollowDAO {
     }
 
     @Override
-    public List<User> getAllFollowers(String followeeAlias) throws DataAccessException {
+    public List<String> getAllFollowers(String followeeAlias) throws DataAccessException {
         ResultsPage<User> results = queryTable(followeeAlias, false, false, null, 0);
-        return results.getValues();
+        List<String> aliases = new ArrayList<>();
+        for (User u : results.getValues()) {
+            aliases.add(u.getAlias());
+        }
+        return aliases;
     }
 
     /**
