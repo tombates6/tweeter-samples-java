@@ -33,7 +33,8 @@ public class UpdateFeedsHandler implements RequestHandler<SQSEvent, Void> {
 
         for (SQSEvent.SQSMessage msg : event.getRecords()) {
             UpdateFeedsRequest updateReq = JsonSerializer.deserialize(msg.getBody(), UpdateFeedsRequest.class);
-            service.updateAllFeeds(updateReq);
+            System.out.println(msg.getBody());
+//            service.updateAllFeeds(updateReq);
         }
         return null;
     }

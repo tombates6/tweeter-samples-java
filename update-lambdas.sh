@@ -12,3 +12,5 @@ aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.
 aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-FollowHandler > ./log.txt
 aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-UnfollowHandler > ./log.txt
 aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-IsFollowerHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-GetPostFollowersHandler > ./log.txt
+aws lambda update-function-code --zip-file fileb://server/build/libs/server-all.jar --function-name Tweeter-UpdateFeedsHandler > ./log.txt

@@ -20,7 +20,7 @@ import edu.byu.cs.tweeter.server.service.FollowService;
  * An AWS lambda function that handles the first level of SQS queues involved in posting a status
  */
 public class GetPostFollowersHandler implements RequestHandler<SQSEvent, Void> {
-    private final String UpdateFeedsQueueURL = "https://sqs.us-west-2.amazonaws.com/619607277720/UpdateFeedsQueue";
+    private static final String UpdateFeedsQueueURL = "https://sqs.us-west-2.amazonaws.com/619607277720/UpdateFeedsQueue";
     /**
      * Gets all followers for a user in preparation to update their feeds with a new post.
      * Forwards the request to another queue.
