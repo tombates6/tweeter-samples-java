@@ -38,7 +38,9 @@ public class GetPostFollowersHandler implements RequestHandler<SQSEvent, Void> {
             PostFollowersResponse followers = service.getAllFollowers(postReq);
 
             // Send new status through the updating pipeline
-            String updateReqString = JsonSerializer.serialize(new UpdateFeedsRequest(postReq.getStatus(), followers.getAliases()));
+            UpdateFeedsRequest updateReq = new UpdateFeedsRequest(postReq.getStatus(), followers.getAliases());
+            String updateReqString = JsonSerializer.serialize(updateReq);
+            System.out.println(updateReqString);
             SendMessageRequest send_msg_request = new SendMessageRequest()
                     .withQueueUrl(UpdateFeedsQueueURL)
                     .withMessageBody(updateReqString);

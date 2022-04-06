@@ -104,7 +104,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         try {
             int lastIndex = 0;
             int nextIndex = Math.min(MAX_WRITE_ITEMS, items.size());
-            while (lastIndex <= items.size()) {
+            while (lastIndex < items.size()) {
                 TableWriteItems feedWriteItems = new TableWriteItems(TableName)
                         .withItemsToPut(items.subList(lastIndex, nextIndex));
                 BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(feedWriteItems);
@@ -122,7 +122,7 @@ public class DynamoDBFeedDAO implements IFeedDAO {
 
                 } while (outcome.getUnprocessedItems().size() > 0);
 
-                lastIndex = nextIndex + 1;
+                lastIndex = nextIndex;
                 nextIndex = lastIndex + MAX_WRITE_ITEMS;
 
                 if (nextIndex > items.size()) {

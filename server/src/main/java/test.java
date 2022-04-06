@@ -1,19 +1,31 @@
+import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.TableWriteItems;
+import com.amazonaws.services.dynamodbv2.model.AmazonDynamoDBException;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.JsonSerializer;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
+import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.UpdateFeedsRequest;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
+import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.server.dao.dynamodb.injection.StatusServiceModule;
 import edu.byu.cs.tweeter.server.dao.dynamodb.injection.UserServiceModule;
+import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 import edu.byu.cs.tweeter.server.service.StatusService;
 import edu.byu.cs.tweeter.server.service.UserService;
 
@@ -57,10 +69,10 @@ public class test {
 
 //        Injector injector = Guice.createInjector(new StatusServiceModule());
 //        StatusService service = injector.getInstance(StatusService.class);
-//        PostStatusResponse r = service.post(new PostStatusRequest(new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L),
+//        PostStatusResponse r = service.post(new PostStatusRequest(new AuthToken("efd24d08-c88d-4903-b89b-435ee2e3089a", Instant.now().toEpochMilli()),
 //                new Status(
 //                        "a dummy post",
-//                        new User("Tom", "Bates", "@TomBates", "https://tbates6-tweeter-images.s3.us-west-2.amazonaws.com/%40TomBates-image.jpeg"),
+//                        new User("Last", "Follower", "@LastFollower", null),
 //                        1648148250026L,
 //                        null,
 //                        null
@@ -73,16 +85,17 @@ public class test {
 //        Injector injector = Guice.createInjector(new UserServiceModule());
 //        UserService service = injector.getInstance(UserService.class);
 //        RegisterResponse r = service.register(new RegisterRequest("Test", "Tester", "@testy", "test", "asdfkjelcnekl/+"));
+
         Injector injector = Guice.createInjector(new StatusServiceModule());
         StatusService service = injector.getInstance(StatusService.class);
         service.updateAllFeeds(new UpdateFeedsRequest(
                 new Status(
                         "test",
-                        new User("User", "1", "@user1", null),
+                        new User("Last", "Follower", "@LastFollower", null),
                         1649208639341L,
                         null, null
                 ),
-                new ArrayList<>() {{ add("@LastFollower"); }}
+                new ArrayList<>() {{ add("@ManyFollowers"); }}
         ));
         int x = 1;
     }

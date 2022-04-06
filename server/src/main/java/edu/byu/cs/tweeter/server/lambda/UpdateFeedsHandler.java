@@ -26,7 +26,8 @@ public class UpdateFeedsHandler implements RequestHandler<SQSEvent, Void> {
 
         for (SQSEvent.SQSMessage msg : event.getRecords()) {
             UpdateFeedsRequest updateReq = JsonSerializer.deserialize(msg.getBody(), UpdateFeedsRequest.class);
-            System.out.println(msg.getBody());
+            System.out.println("Status: " + updateReq.getStatus().toString());
+            System.out.println("Aliases: " + updateReq.getAliases().toString());
             service.updateAllFeeds(updateReq);
         }
         return null;
