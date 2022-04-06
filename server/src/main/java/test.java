@@ -1,41 +1,9 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Base64;
-
-import edu.byu.cs.tweeter.model.domain.AuthToken;
-import edu.byu.cs.tweeter.model.domain.Status;
-import edu.byu.cs.tweeter.model.domain.User;
-import edu.byu.cs.tweeter.model.net.request.FeedRequest;
-import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
-import edu.byu.cs.tweeter.model.net.request.FollowersRequest;
-import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
-import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
-import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
-import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
-import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
-import edu.byu.cs.tweeter.model.net.request.StoryRequest;
-import edu.byu.cs.tweeter.model.net.request.UserRequest;
-import edu.byu.cs.tweeter.model.net.response.FeedResponse;
-import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
-import edu.byu.cs.tweeter.model.net.response.FollowersResponse;
-import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
-import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
-import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
-import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
-import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
-import edu.byu.cs.tweeter.model.net.response.StoryResponse;
-import edu.byu.cs.tweeter.model.net.response.UserResponse;
-import edu.byu.cs.tweeter.server.dao.S3ImageDAO;
-import edu.byu.cs.tweeter.server.dao.dynamodb.injection.FollowServiceModule;
-import edu.byu.cs.tweeter.server.dao.dynamodb.injection.StatusServiceModule;
 import edu.byu.cs.tweeter.server.dao.dynamodb.injection.UserServiceModule;
-import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
-import edu.byu.cs.tweeter.server.service.FollowService;
-import edu.byu.cs.tweeter.server.service.StatusService;
 import edu.byu.cs.tweeter.server.service.UserService;
 
 public class test {
