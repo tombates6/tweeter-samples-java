@@ -95,14 +95,16 @@ public class DynamoDBFeedDAO implements IFeedDAO {
                     .withString(PostAttr, status.getPost())
                     .withString(AuthorAliasAttr, status.getUser().getAlias())
                     .withString(AuthorFirstNameAttr, status.getUser().getFirstName())
-                    .withString(AuthorLastNameAttr, status.getUser().getLastName())
-                    .withString(AuthorImageURLAttr, status.getUser().getImageUrl());
+                    .withString(AuthorLastNameAttr, status.getUser().getLastName());
+            if (status.getUser().getImageUrl() != null) {
+                item = item.withString(AuthorImageURLAttr, status.getUser().getImageUrl());
+            }
             items.add(item);
         }
         try {
             int lastIndex = 0;
-            int nextIndex = MAX_WRITE_ITEMS < items.size() ? MAX_WRITE_ITEMS : items.size() - 1;
-            while (lastIndex <= items.size() - 1) {
+            int nextIndex = Math.min(MAX_WRITE_ITEMS, items.size());
+            while (lastIndex <= items.size()) {
                 TableWriteItems feedWriteItems = new TableWriteItems(TableName)
                         .withItemsToPut(items.subList(lastIndex, nextIndex));
                 BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(feedWriteItems);
@@ -123,8 +125,8 @@ public class DynamoDBFeedDAO implements IFeedDAO {
                 lastIndex = nextIndex + 1;
                 nextIndex = lastIndex + MAX_WRITE_ITEMS;
 
-                if (nextIndex >= items.size()) {
-                    nextIndex = items.size() - 1;
+                if (nextIndex > items.size()) {
+                    nextIndex = items.size();
                 }
             }
         } catch (AmazonDynamoDBException e) {

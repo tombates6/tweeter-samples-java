@@ -1,9 +1,20 @@
+import com.amazonaws.services.sqs.AmazonSQS;
+import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import java.util.ArrayList;
+
+import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.JsonSerializer;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
+import edu.byu.cs.tweeter.model.net.request.UpdateFeedsRequest;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
+import edu.byu.cs.tweeter.server.dao.dynamodb.injection.StatusServiceModule;
 import edu.byu.cs.tweeter.server.dao.dynamodb.injection.UserServiceModule;
+import edu.byu.cs.tweeter.server.service.StatusService;
 import edu.byu.cs.tweeter.server.service.UserService;
 
 public class test {
@@ -12,9 +23,9 @@ public class test {
 //        UserService service = injector.getInstance(UserService.class);
 //        UserResponse r = service.getUserProfile(new UserRequest("@TomBates", new AuthToken("4e4f5a72-5552-4716-a4d0-6a8c06fc5340",1648148250026L)));
 
-        Injector injector = Guice.createInjector(new UserServiceModule());
-        UserService service = injector.getInstance(UserService.class);
-        LoginResponse r = service.login(new LoginRequest("@testy", "test"));
+//        Injector injector = Guice.createInjector(new UserServiceModule());
+//        UserService service = injector.getInstance(UserService.class);
+//        LoginResponse r = service.login(new LoginRequest("@testy", "test"));
 
 //        Injector injector = Guice.createInjector(new FollowServiceModule());
 //        FollowService service = injector.getInstance(FollowService.class);
@@ -62,7 +73,17 @@ public class test {
 //        Injector injector = Guice.createInjector(new UserServiceModule());
 //        UserService service = injector.getInstance(UserService.class);
 //        RegisterResponse r = service.register(new RegisterRequest("Test", "Tester", "@testy", "test", "asdfkjelcnekl/+"));
-
+        Injector injector = Guice.createInjector(new StatusServiceModule());
+        StatusService service = injector.getInstance(StatusService.class);
+        service.updateAllFeeds(new UpdateFeedsRequest(
+                new Status(
+                        "test",
+                        new User("User", "1", "@user1", null),
+                        1649208639341L,
+                        null, null
+                ),
+                new ArrayList<>() {{ add("@LastFollower"); }}
+        ));
         int x = 1;
     }
 }
