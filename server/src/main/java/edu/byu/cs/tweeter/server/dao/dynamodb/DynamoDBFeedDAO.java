@@ -104,13 +104,30 @@ public class DynamoDBFeedDAO implements IFeedDAO {
         try {
             int lastIndex = 0;
             int nextIndex = MAX_WRITE_ITEMS < items.size() ? MAX_WRITE_ITEMS : items.size() - 1;
-            while (nextIndex <= items.size() - 1) {
+            while (lastIndex <= items.size() - 1) {
                 TableWriteItems feedWriteItems = new TableWriteItems(TableName)
                         .withItemsToPut(items.subList(lastIndex, nextIndex));
-                dynamoDB.batchWriteItem(feedWriteItems);
+                BatchWriteItemOutcome outcome = dynamoDB.batchWriteItem(feedWriteItems);
+                do {
+
+                    // Check for unprocessed keys which could happen if you exceed
+                    // provisioned throughput
+
+                    Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
+
+                    if (outcome.getUnprocessedItems().size() != 0) {
+                        System.out.println("Retrieving the unprocessed items");
+                        outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
+                    }
+
+                } while (outcome.getUnprocessedItems().size() > 0);
 
                 lastIndex = nextIndex + 1;
-                nextIndex += MAX_WRITE_ITEMS;
+                nextIndex = lastIndex + MAX_WRITE_ITEMS;
+
+                if (nextIndex >= items.size()) {
+                    nextIndex = items.size() - 1;
+                }
             }
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());

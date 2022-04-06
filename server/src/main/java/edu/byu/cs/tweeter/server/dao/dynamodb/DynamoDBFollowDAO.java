@@ -128,7 +128,8 @@ public class DynamoDBFollowDAO implements IFollowDAO {
                     .withString(FollowerFirstNameAttr, follower.getFirstName())
                     .withString(FollowerLastNameAttr, follower.getLastName())
                     .withString(FolloweeFirstNameAttr, followee.getFirstName())
-                    .withString(FolloweeLastNameAttr, followee.getLastName());
+                    .withString(FolloweeLastNameAttr, followee.getLastName())
+                    .withString(FolloweeImageURLAttr, followee.getImageUrl());
             table.putItem(item);
         } catch (AmazonDynamoDBException e) {
             throw new DataAccessException("[Server Error] " + e.getMessage(), e.getCause());
