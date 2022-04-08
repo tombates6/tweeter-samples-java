@@ -14,22 +14,25 @@ import edu.byu.cs.tweeter.server.dao.IAuthDAO;
 import edu.byu.cs.tweeter.server.dao.IFeedDAO;
 import edu.byu.cs.tweeter.server.dao.IFollowDAO;
 import edu.byu.cs.tweeter.server.dao.IStoryDAO;
+import edu.byu.cs.tweeter.server.dao.IUserDAO;
 import edu.byu.cs.tweeter.server.dao.ResultsPage;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBAuthDAO;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBFeedDAO;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBStoryDAO;
+import edu.byu.cs.tweeter.server.dao.dynamodb.DynamoDBUserDAO;
 import edu.byu.cs.tweeter.server.dao.exceptions.DataAccessException;
 
 public class StatusService {
-    private final IAuthDAO authDAO;
-    private final IStoryDAO storyDAO;
-    private final IFeedDAO feedDAO;
-    private final IFollowDAO followDAO;
+//    private final IAuthDAO authDAO;
+//    private final IStoryDAO storyDAO;
+//    private final IFeedDAO feedDAO;
 
-    @Inject
-    public StatusService(IAuthDAO authDAO, IStoryDAO storyDAO, IFeedDAO feedDAO, IFollowDAO followDAO) {
-        this.authDAO = authDAO;
-        this.storyDAO = storyDAO;
-        this.feedDAO = feedDAO;
-        this.followDAO = followDAO;
-    }
+//    @Inject
+//    public StatusService(IAuthDAO authDAO, IStoryDAO storyDAO, IFeedDAO feedDAO) {
+//        this.authDAO = authDAO;
+//        this.storyDAO = storyDAO;
+//        this.feedDAO = feedDAO;
+//    }
     
     public FeedResponse getFeed(FeedRequest req) {
         if (req.getUserAlias() == null) {
@@ -38,8 +41,8 @@ public class StatusService {
             throw new RuntimeException("[BadRequest] Request needs to have a positive limit");
         }
         try {
-            authDAO.validateToken(req.getAuthToken());
-            ResultsPage<Status> results = feedDAO.getFeed(
+            getAuthDAO().validateToken(req.getAuthToken());
+            ResultsPage<Status> results = getFeedDAO().getFeed(
                     req.getUserAlias(),
                     req.getLimit(),
                     req.getLastStatus()
@@ -61,8 +64,8 @@ public class StatusService {
         }
 
         try {
-            authDAO.validateToken(req.getAuthToken());
-            ResultsPage<Status> results = storyDAO.getStory(
+            getAuthDAO().validateToken(req.getAuthToken());
+            ResultsPage<Status> results = getStoryDAO().getStory(
                     req.getUserAlias(),
                     req.getLimit(),
                     req.getLastStatus()
@@ -81,8 +84,8 @@ public class StatusService {
             throw new RuntimeException("[BadRequest] Request needs to have a status");
         }
         try {
-            authDAO.validateToken(req.getAuthToken());
-            storyDAO.postStatus(req.getStatus());
+            getAuthDAO().validateToken(req.getAuthToken());
+            getStoryDAO().postStatus(req.getStatus());
             return new PostStatusResponse(true, null);
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
@@ -91,9 +94,20 @@ public class StatusService {
 
     public void updateAllFeeds(UpdateFeedsRequest req) {
         try {
-            feedDAO.updateFeeds(req.getAliases(), req.getStatus());
+            getFeedDAO().updateFeeds(req.getAliases(), req.getStatus());
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    // FIXME this is a temporary arrangement to appease the DI/unit test demons
+    public IStoryDAO getStoryDAO() {
+        return new DynamoDBStoryDAO();
+    }
+    public IAuthDAO getAuthDAO() {
+        return new DynamoDBAuthDAO();
+    }
+    public IFeedDAO getFeedDAO() {
+        return new DynamoDBFeedDAO();
     }
 }
