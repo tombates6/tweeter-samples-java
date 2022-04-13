@@ -4,16 +4,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.client.model.service.observer.IAuthObserver;
+import edu.byu.cs.tweeter.client.model.service.observer.IEmptySuccessObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.IPagedTaskObserver;
 import edu.byu.cs.tweeter.client.presenter.MainPresenter;
 import edu.byu.cs.tweeter.client.presenter.view.MainView;
@@ -40,13 +45,15 @@ public class PostStatusIntegrationTest {
     private CountDownLatch postCountDownLatch;
 
     /**
-     * Create a StatusService spy that uses a mock ServerFacade to return known responses to
+     * Create a MainPresenter spy that uses a real ServerFacade to return known responses to
      * requests.
      */
     @Before
     public void setup() {
         view = Mockito.mock(MainView.class);
         mainPresenterSpy = spy(new MainPresenter(view));
+
+        when(mainPresenterSpy.createStatusObserver()).thenReturn(new PostStatusObserver());
 
         authServiceSpy = spy(new AuthService());
         statusServiceSpy = spy(new StatusService());
@@ -162,53 +169,56 @@ public class PostStatusIntegrationTest {
         }
     }
 
-    private class AuthObserver implements IAuthObserver {
+    public class PostStatusObserver implements IEmptySuccessObserver {
 
         @Override
         public void handleFailure(String message) {
-
+            postCountDownLatch.countDown();
+            throw new RuntimeException(message);
         }
 
         @Override
         public void handleException(Exception exception) {
+            postCountDownLatch.countDown();
+            throw new RuntimeException(exception.getMessage());
+        }
 
+        @Override
+        public void handleSuccess() {
+            view.post();
+            postCountDownLatch.countDown();
+        }
+    }
+
+    private class AuthObserver implements IAuthObserver {
+
+        @Override
+        public void handleFailure(String message) {
+            authCountDownLatch.countDown();
+            throw new RuntimeException(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            authCountDownLatch.countDown();
+            throw new RuntimeException(exception.getMessage());
         }
 
         @Override
         public void handleSuccess(User loggedInUser, AuthToken authToken) {
             currentUser = loggedInUser;
             currentAuthToken = authToken;
+            authCountDownLatch.countDown();
         }
-    }
-
-    /**
-     * Verify that for successful requests, the {@link StatusService#getStory}
-     * asynchronous method eventually returns the same result as the {@link ServerFacade}.
-     */
-    @Test
-    public void testGetStory_validRequest_correctResponse() throws InterruptedException {
-        awaitStoryCountDownLatch();
-
-        List<Status> expectedStatuses = new FakeData().getFakeStatuses().subList(0, 3);
-        List<Status> actualStatuses = storyObserver.getStatuses();
-        assertTrue(storyObserver.isSuccess());
-        assertNull(storyObserver.getMessage());
-        for (int i = 0; i < 3; i++){
-            assertEquals(expectedStatuses.get(i).getPost(), actualStatuses.get(i).getPost());
-            assertEquals(expectedStatuses.get(i).getMentions(), actualStatuses.get(i).getMentions());
-            assertEquals(expectedStatuses.get(i).getUrls(), actualStatuses.get(i).getUrls());
-            assertEquals(expectedStatuses.get(i).getUser(), actualStatuses.get(i).getUser());
-        }
-        assertTrue(storyObserver.getHasMorePages());
-        assertNull(storyObserver.getException());
     }
 
     @Test
     public void testPostStory_validRequest_correctResponse() throws InterruptedException {
+
         authServiceSpy.login("@LastFollower", "lastfollower", loginObserver);
         awaitAuthCountDownLatch();
 
-        mainPresenterSpy.postStatus(testPost);
+        mainPresenterSpy.postStatus("integration test");
         awaitPostCountDownLatch();
 
         statusServiceSpy.getStory(currentAuthToken, currentUser, 1, null, storyObserver);
@@ -218,10 +228,9 @@ public class PostStatusIntegrationTest {
         assertTrue(storyObserver.isSuccess());
         assertNull(storyObserver.getMessage());
 
-        assertEquals(statuses.get(0).getPost(), testPost);
+        assertEquals(statuses.get(0).getPost(), "integration test");
 
-
-
+        verify(view).post();
 
     }
 }

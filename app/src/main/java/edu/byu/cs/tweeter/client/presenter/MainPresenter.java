@@ -43,7 +43,7 @@ public class MainPresenter extends Presenter<MainView>{
 
     public void postStatus(String post) {
         Status newStatus = createStatus(post);
-        PostStatusObserver observer = createStatusObserver();
+        IEmptySuccessObserver observer = createStatusObserver();
         getStatusService().postStatus(Cache.getInstance().getCurrUserAuthToken(), newStatus, observer);
     }
 
@@ -51,7 +51,7 @@ public class MainPresenter extends Presenter<MainView>{
         return new StatusService();
     }
 
-    public PostStatusObserver createStatusObserver() {
+    public IEmptySuccessObserver createStatusObserver() {
         return new PostStatusObserver();
     }
 
