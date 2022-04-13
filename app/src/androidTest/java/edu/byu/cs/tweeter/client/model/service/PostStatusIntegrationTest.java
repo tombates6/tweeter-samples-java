@@ -7,26 +7,37 @@ import static org.mockito.Mockito.spy;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
+import edu.byu.cs.tweeter.client.model.service.observer.IAuthObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.IPagedTaskObserver;
+import edu.byu.cs.tweeter.client.presenter.MainPresenter;
+import edu.byu.cs.tweeter.client.presenter.view.MainView;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
 
-public class StatusServiceIntegrationTest {
+public class PostStatusIntegrationTest {
 
     private User currentUser;
     private AuthToken currentAuthToken;
 
-    private StatusService statusServiceSpy;
-    private StoryObserver observer;
 
-    private CountDownLatch countDownLatch;
+    private AuthService authServiceSpy;
+    private MainView view;
+    private MainPresenter mainPresenterSpy;
+    private StatusService statusServiceSpy;
+    private StoryObserver storyObserver;
+    private AuthObserver loginObserver;
+
+    private CountDownLatch storyCountDownLatch;
+    private CountDownLatch authCountDownLatch;
+    private CountDownLatch postCountDownLatch;
 
     /**
      * Create a StatusService spy that uses a mock ServerFacade to return known responses to
@@ -34,25 +45,52 @@ public class StatusServiceIntegrationTest {
      */
     @Before
     public void setup() {
-        currentUser = new User("FirstName", "LastName", null);
-        currentAuthToken = new AuthToken();
+        view = Mockito.mock(MainView.class);
+        mainPresenterSpy = spy(new MainPresenter(view));
 
+        authServiceSpy = spy(new AuthService());
         statusServiceSpy = spy(new StatusService());
 
         // Setup an observer for the StatusService
-        observer = new StoryObserver();
+        storyObserver = new StoryObserver();
+
+        loginObserver = new AuthObserver();
 
         // Prepare the countdown latch
-        resetCountDownLatch();
+        resetCountDownLatches();
     }
 
-    private void resetCountDownLatch() {
-        countDownLatch = new CountDownLatch(1);
+    private void resetCountDownLatches() {
+        storyCountDownLatch = new CountDownLatch(1);
+        authCountDownLatch = new CountDownLatch(1);
+        postCountDownLatch = new CountDownLatch(1);
     }
 
-    private void awaitCountDownLatch() throws InterruptedException {
-        countDownLatch.await();
-        resetCountDownLatch();
+    private void resetPostCountDownLatch() {
+        postCountDownLatch = new CountDownLatch(1);
+    }
+
+    private void resetAuthCountDownLatch() {
+        authCountDownLatch = new CountDownLatch(1);
+    }
+
+    private void resetStoryCountDownLatch() {
+        storyCountDownLatch = new CountDownLatch(1);
+    }
+
+    private void awaitStoryCountDownLatch() throws InterruptedException {
+        storyCountDownLatch.await();
+        resetStoryCountDownLatch();
+    }
+
+    private void awaitPostCountDownLatch() throws InterruptedException {
+        postCountDownLatch.await();
+        resetPostCountDownLatch();
+    }
+
+    private void awaitAuthCountDownLatch() throws InterruptedException {
+        authCountDownLatch.await();
+        resetAuthCountDownLatch();
     }
 
     /**
@@ -76,7 +114,7 @@ public class StatusServiceIntegrationTest {
             this.hasMorePages = false;
             this.exception = null;
 
-            countDownLatch.countDown();
+            storyCountDownLatch.countDown();
         }
 
         @Override
@@ -88,7 +126,7 @@ public class StatusServiceIntegrationTest {
             this.hasMorePages = false;
             this.exception = exception;
 
-            countDownLatch.countDown();
+            storyCountDownLatch.countDown();
         }
 
         @Override
@@ -99,7 +137,7 @@ public class StatusServiceIntegrationTest {
             this.hasMorePages = hasMorePages;
             this.exception = null;
 
-            countDownLatch.countDown();
+            storyCountDownLatch.countDown();
 
         }
 
@@ -124,26 +162,66 @@ public class StatusServiceIntegrationTest {
         }
     }
 
+    private class AuthObserver implements IAuthObserver {
+
+        @Override
+        public void handleFailure(String message) {
+
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+
+        }
+
+        @Override
+        public void handleSuccess(User loggedInUser, AuthToken authToken) {
+            currentUser = loggedInUser;
+            currentAuthToken = authToken;
+        }
+    }
+
     /**
      * Verify that for successful requests, the {@link StatusService#getStory}
      * asynchronous method eventually returns the same result as the {@link ServerFacade}.
      */
     @Test
     public void testGetStory_validRequest_correctResponse() throws InterruptedException {
-        statusServiceSpy.getStory(currentAuthToken, currentUser, 3, null, observer);
-        awaitCountDownLatch();
+        awaitStoryCountDownLatch();
 
         List<Status> expectedStatuses = new FakeData().getFakeStatuses().subList(0, 3);
-        List<Status> actualStatuses = observer.getStatuses();
-        assertTrue(observer.isSuccess());
-        assertNull(observer.getMessage());
+        List<Status> actualStatuses = storyObserver.getStatuses();
+        assertTrue(storyObserver.isSuccess());
+        assertNull(storyObserver.getMessage());
         for (int i = 0; i < 3; i++){
             assertEquals(expectedStatuses.get(i).getPost(), actualStatuses.get(i).getPost());
             assertEquals(expectedStatuses.get(i).getMentions(), actualStatuses.get(i).getMentions());
             assertEquals(expectedStatuses.get(i).getUrls(), actualStatuses.get(i).getUrls());
             assertEquals(expectedStatuses.get(i).getUser(), actualStatuses.get(i).getUser());
         }
-        assertTrue(observer.getHasMorePages());
-        assertNull(observer.getException());
+        assertTrue(storyObserver.getHasMorePages());
+        assertNull(storyObserver.getException());
+    }
+
+    @Test
+    public void testPostStory_validRequest_correctResponse() throws InterruptedException {
+        authServiceSpy.login("@LastFollower", "lastfollower", loginObserver);
+        awaitAuthCountDownLatch();
+
+        mainPresenterSpy.postStatus(testPost);
+        awaitPostCountDownLatch();
+
+        statusServiceSpy.getStory(currentAuthToken, currentUser, 1, null, storyObserver);
+        awaitStoryCountDownLatch();
+
+        List<Status> statuses = storyObserver.getStatuses();
+        assertTrue(storyObserver.isSuccess());
+        assertNull(storyObserver.getMessage());
+
+        assertEquals(statuses.get(0).getPost(), testPost);
+
+
+
+
     }
 }
